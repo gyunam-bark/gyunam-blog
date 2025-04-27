@@ -22,7 +22,7 @@ jobs:
         run: npm install
 
       - name: build 11ty site
-        run: npm run buildd
+        run: npm run build
 
       - name: deploy togitHub pages
         uses: peaceiris/actions-gh-pages@v3
