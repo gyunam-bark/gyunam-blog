@@ -1,0 +1,15 @@
+{% extends "layouts/base.njk" %}
+
+{% block content %}
+<ul class = "post-list">
+  {% for post in pagination.items %}
+    <li class="post-item">
+      <h2><a class="post-item-title" href="{{ post.url }}">{{ post.data.title }}</a></h2>
+      <p class="post-item-subtitle">{{ post.data.subtitle }}</p>
+      {% if post.date %}
+        <small class="post-item-date">{{ post.date | date }}</small>
+      {% endif %}
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %}
