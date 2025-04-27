@@ -1,0 +1,13 @@
+{% extends "layouts/base.njk" %}
+
+{% block content %}
+  <article>
+    <h1>{{ title }}</h1>
+
+    {% if subtitle %}
+      <p class="subtitle">{{ subtitle }}</p>
+    {% endif %}
+
+    {{ content | safe }}
+  </article>
+{% endblock %}
