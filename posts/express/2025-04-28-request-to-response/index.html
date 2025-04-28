@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="a tiny blog by gyunam park.">
+  <meta name="author" content="Gyunam Park">
+  <!-- OPEN GRAPH -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="gyunam.blog">
+  <!-- 파비콘(favicon) -->
+  <link rel="icon" href="/resources/favicon/favicon.ico" type="image/x-icon">
+  <!-- canonical URL -->
+  <link rel="canonical" href="https://www.gyunam.blog/">
+  
+  <link rel="stylesheet" href="/styles.css">
+  <title>gyunam.blog</title>
+</head>
+<body>
+  <header>
+  <div class="header-container">
+    <a class="header-title" href="/">gyunam.blog</a>
+    <nav class="header-nav">
+      <ul class="header-tag-list">
+        <li class="header-tag-list-item">
+          <a href="/tags/11ty/">11ty (1)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/express/">express (2)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/weekly/">weekly (1)</a>
+        </li>
+         <li class="header-tag-list-item">
+          <a href="/tags/toy/">toy (1)</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+  <main>
+    
+  <article>
+    <h1>[express] request-to-response</h1>
+
+    
+      <p class="subtitle">요청(request)를 받아서 응답(response) 보내는 웹서버 만들기.</p>
+    
+
+    <p>지난 번 hello-world 프로젝트는 정해진 대답만 해서 조금 밋밋하다.</p>
+<p>이번에는 요청(request)를 받아서 응답(response) 하는 걸 조금 써보려고 한다.</p>
+<h2>request-to-response 디렉토리 만들기</h2>
+<p>디렉토리 이름, 즉, 프로젝트 이름을 짓는 것은 항상 고민된다.
+나는 단어 약어보다 길게 적는 걸 선호해서 request-to-response라고 지었지만, 아마 보통 req-to-res로 많이 지을 가능성이 높다. 왜냐? 길잖아...</p>
+<p>나는 그 약어가 어떤 단어를 축약한건지 궁금해하는 성격이라서, 학습을 하는 동안에는 항상 가능한 원본 단어 그대로 사용하는 것을 선호한다. 팀프로젝트를 할 때엔 어떨지 모르겠다.</p>
+<p>request-to-response 디렉토리를 만들고, express 소환 3콤보를 터미널에 순차적으로 입력한다.</p>
+<blockquote>
+<p>npm init -y<br>
+npm pkg set type=&quot;module&quot;<br>
+npm i --save express</p>
+</blockquote>
+<p>정상적으로 express 설치가 완료되었다면, request-to-response 디렉토리는 아래와 같이 된다.</p>
+<pre class="language-text"><code class="language-text">
+request-to-response 
+├ node_modules   
+├ package-lock.json  
+├ package.json
+
+</code></pre>
+<p>이번에는 신상 npm 명령어로 스크립트 추가하는 법을 알아보자.</p>
+<blockquote>
+<p>npm pkg set scripts.start=&quot;node index.js&quot;</p>
+</blockquote>
+<p>javascript의 객체 문법을 그대로 사용해서 추가할 수 있다. scripts의 start에 &quot;node index.js&quot;를 추가한다는 뜻이다. npm 명령어만 적절히 사용하면, package.json을 아예 열어보지 않아도 된다!</p>
+<h2>index.js 파일 만들기</h2>
+<p>이제 <strong>index.js</strong> 를 만들, 기본적인 express 프로젝트의 구조는 완성된다.</p>
+<pre class="language-text"><code class="language-text">
+request-to-response  
+├ node_modules   
+├ index.js  
+├ package-lock.json  
+├ package.json
+
+</code></pre>
+<h2>hello-world 코드에서 시작하기</h2>
+<p>지난 번에 완성했던 hello-world 코드를 복사-붙여넣기로 가져온다.</p>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token keyword">import</span> express <span class="token keyword">from</span> <span class="token string">'express'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> app <span class="token operator">=</span> <span class="token function">express</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> port <span class="token operator">=</span> <span class="token number">3000</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'/'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">req<span class="token punctuation">,</span> res</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token string">'hello,world.'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">listen</span><span class="token punctuation">(</span>port<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Example app listening on port </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>port<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+</code></pre>
+<p>코드 복사 후 정상적으로 동작하는지 express를 실행해서 확인해보자.</p>
+<blockquote>
+<p>npm run start</p>
+</blockquote>
+<p>기본 주소는 <strong>localhost:3000</strong> 이다.</p>
+<p><img src="/resources/express/2025-04-28-request-to-response/1.png" alt="1"></p>
+<p>hello,world.가 잘 동작하고 있다.</p>
+<blockquote>
+<p>ctrl+c 두 번</p>
+</blockquote>
+<p>이제 express를 종료하고 코드를 약간 추가해보자.</p>
+<h2>예제 코드 추가하기</h2>
+<p>기존의 app.get 코드에서 조금만 수정한 새로운 app.get 코드를 아래에 추가한다.</p>
+<pre class="language-javascript"><code class="language-javascript">
+app<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'/'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">req<span class="token punctuation">,</span> res</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">hello,world.</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 추가된 코드</span>
+app<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'/:name'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">req<span class="token punctuation">,</span> res</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> name <span class="token operator">=</span> req<span class="token punctuation">.</span>params<span class="token punctuation">.</span>name<span class="token punctuation">;</span>
+    res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">hello,</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>name<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">.</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+</code></pre>
+<p>정확하게 뭐가 어떻게 되는지는 몰라도, <strong>:name</strong> 이 경로에 추가된 것과 <strong>req</strong> 라는 함수 인자를 사용하고 있는 것은 알 수 있다.</p>
+<p>참고로 두번째 res.send 코드는 따옴표(')가 아니라 백틱(`)으로 변경되어있다. 나는 귀찮아서 (거의) 모든 문자열을 백틱(`)으로 처리한다.</p>
+<h2>예제 실행하기</h2>
+<p>express를 실행하면 놀랍게도.</p>
+<p><img src="/resources/express/2025-04-28-request-to-response/1.png" alt="1"></p>
+<p>똑같이 나온다.</p>
+<p>코드를 분명 수정했는데, 변한 것이 없어 보인다. 하지만 여기서 주소창에 약간의 수정을 더해보자.</p>
+<blockquote>
+<p>localhost:3000/cat</p>
+</blockquote>
+<p><img src="/resources/express/2025-04-28-request-to-response/2.png" alt="2"></p>
+<p>cat 말고 다른 것들을 넣어보자. 한국어를 넣어도 문제없이 동작한다!</p>
+<p>이게 얼마나 놀라운 거냐면, 지구 어딘가에 있을 밥이라는 사람에게 인사를 보낼 때 <strong>www.hello.com/bob</strong> 이라는 간단한 링크만 보내주면 된다. 밥이 이 경로가 기억하고 있다면, 언제라도 이 사이트에서 동일한 인사를 볼 수 있다!</p>
+<h2>추가한 코드 톺아보기</h2>
+<p>다행히도 이번에 살펴볼 부분은 많지 않다.</p>
+<pre class="language-javascript"><code class="language-javascript">
+app<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'/:name'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">req<span class="token punctuation">,</span> res</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> name <span class="token operator">=</span> req<span class="token punctuation">.</span>params<span class="token punctuation">.</span>name<span class="token punctuation">;</span>
+    res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">hello,</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>name<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">.</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+</code></pre>
+<p>req 객체에는 많은 주요 속성과 메서드들이 내장되어있다. 다르게 말하면 서버가 요청(request)받을 때 쓰이는 것들은 모두 들어가 있다는 뜻이라서, 요청(request)에 한해서 올인원 객체라는 뜻이다.</p>
+<p>이번에 사용한 주요 속성은 매개변수(parameter) 다.</p>
+<blockquote>
+<p>req.params</p>
+</blockquote>
+<p>사실 복잡하게 생각할 필요없다.</p>
+<p>특정한 형태로 express 에 <strong>이런 이름의 매개 변수에 이런 값이 들어왔다</strong>고 전달하는게 전부다.</p>
+<p><strong>'/:name'</strong> 에서 <strong>/:</strong> 이 기호가 매개 변수의 이름을 지정한다.</p>
+<p><strong>req.params.name</strong> 의 <strong>name</strong> 은 위에서 정한 매개 변수의 이름을 사용한다.</p>
+<p>그래서 정리하면, <strong>'/:'</strong> 뒤에 있는 <strong>name</strong> 이 <strong>req.prams.</strong> 뒤에 있는 <strong>name</strong> 이다. 만약 /:food 였다면 아래의 코드처럼 될 것이다.</p>
+<pre class="language-javascript"><code class="language-javascript">
+app<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'/:food'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">req<span class="token punctuation">,</span> res</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> food <span class="token operator">=</span> req<span class="token punctuation">.</span>params<span class="token punctuation">.</span>food<span class="token punctuation">;</span>
+    res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">hello,</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>food<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">.</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+</code></pre>
+<h2>짝수인지 홀수인지 답해주는 웹서버</h2>
+<p>이제 간단한 javascript 로직을 넣어서 매개 인자로 들어온 숫자가 짝수인지 홀수인지 답해주는 웹 서버로 발전시켜보자.</p>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token keyword">import</span> express <span class="token keyword">from</span> <span class="token string">'express'</span>
+
+<span class="token keyword">const</span> app <span class="token operator">=</span> <span class="token function">express</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> port <span class="token operator">=</span> <span class="token number">3000</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'/'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">req<span class="token punctuation">,</span> res</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">hello,world.</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'/:number'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">req<span class="token punctuation">,</span> res</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> number <span class="token operator">=</span> req<span class="token punctuation">.</span>params<span class="token punctuation">.</span>number<span class="token punctuation">;</span>
+    <span class="token keyword">let</span> response <span class="token operator">=</span> <span class="token string">''</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isNaN</span><span class="token punctuation">(</span>number<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        response <span class="token operator">=</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">숫자만 입력해주세요.</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        <span class="token keyword">const</span> integer <span class="token operator">=</span> <span class="token function">parseInt</span><span class="token punctuation">(</span>number<span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">const</span> type <span class="token operator">=</span> integer <span class="token operator">%</span> <span class="token number">2</span> <span class="token operator">===</span> <span class="token number">0</span> <span class="token operator">?</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">짝수</span><span class="token template-punctuation string">`</span></span> <span class="token operator">:</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">홀수</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">;</span>
+        response <span class="token operator">=</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>integer<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">는 </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>type<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">입니다.</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+app<span class="token punctuation">.</span><span class="token function">listen</span><span class="token punctuation">(</span>port<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Example app listening on port </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>port<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+</code></pre>
+<p>간단한 예외처리 코드까지 넣어보았다.</p>
+<p>예외처리 코드를 넣게 된 이유는 의도했던 대로 입력이 안 될 수도 있다는 것을 깨달았기 때문이다. 웹 서버를 다시 시작하고 /cat이 되어 있는 상태에서 웹페이지를 새로고침 했더니 짝수가 나왔다. 내가 아무생각 없이 실수했던 것처럼 다른 사용자들도 그럴 가능성이 매우 높기 때문에, 입력된 값이 숫자가 아닌지 체크하는 코드를 추가했다.</p>
+<h2>마무리</h2>
+<p>생각보다 훨씬 재밌는 예제였다.</p>
+<p>response에 html 태그와 css 코드가 들어가면 더 예쁜 결과물이 나왔겠지만, express 의 기본적인 동작을 확인하는 게 목적이었으므로 만족한다.</p>
+
+  </article>
+
+  </main>
+  <footer>
+  <p>&copy; gyunam park</p>
+</footer>
+</body>
+</html>

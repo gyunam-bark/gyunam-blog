@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="a tiny blog by gyunam park.">
+  <meta name="author" content="Gyunam Park">
+  <!-- OPEN GRAPH -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="gyunam.blog">
+  <!-- 파비콘(favicon) -->
+  <link rel="icon" href="/resources/favicon/favicon.ico" type="image/x-icon">
+  <!-- canonical URL -->
+  <link rel="canonical" href="https://www.gyunam.blog/">
+  
+  <link rel="stylesheet" href="/styles.css">
+  <title>gyunam.blog</title>
+</head>
+<body>
+  <header>
+  <div class="header-container">
+    <a class="header-title" href="/">gyunam.blog</a>
+    <nav class="header-nav">
+      <ul class="header-tag-list">
+        <li class="header-tag-list-item">
+          <a href="/tags/11ty/">11ty (1)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/express/">express (2)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/weekly/">weekly (1)</a>
+        </li>
+         <li class="header-tag-list-item">
+          <a href="/tags/toy/">toy (1)</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+  <main>
+    
+  <article>
+    <h1>[weekly] [nb] 웹 개발 시작하기(1)</h1>
+
+    
+      <p class="subtitle">url의 구성 요소 중 쿼리가 무엇인지 실제 웹 서비스의 쿼리를 예시로 설명해 주세요.</p>
+    
+
+    <h2>url(uniform resource locator)</h2>
+<p>url은 웹에 게시된 리소스를 검색하기 위한 주소에 불과하다.</p>
+<p>이론적으로 각각의 url 주소는 고유한 하나의 리소스를 가리킨다. 단순하게는 html 문서, css 문서, 이미지 등이 될 수 있다. 그러나 이 규칙에도 몇 가지 예외가 있는데, 대게 더 이상 존재하지 않거나 이동된 리소스를 가리키는 경우다.</p>
+<p>그렇기 때문에 url 을 관리하는 것은 백엔드 개발자에게는 굉장히 중요한 부분 중 하나다.</p>
+<h2>url의 기본구조</h2>
+<p>url의 기본적인 구조를 살펴보자.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">scheme</th>
+<th style="text-align:center">://</th>
+<th style="text-align:center">authority</th>
+<th style="text-align:center">path</th>
+<th style="text-align:center">?</th>
+<th style="text-align:center">parameter</th>
+<th style="text-align:center">#</th>
+<th style="text-align:center">anchor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">https</td>
+<td style="text-align:center">://</td>
+<td style="text-align:center">youtube.com</td>
+<td style="text-align:center">/</td>
+<td style="text-align:center">watch</td>
+<td style="text-align:center">v=PeLAIPQ_rZo</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+</tbody>
+</table>
+<p>구성요소 중에서 일부는 필수적이고, 일부는 선택 사항이다.</p>
+<p>각 요소별로 정리하면 아래와 같다.</p>
+<h2>scheme(스낌)</h2>
+<p>라틴어 Skhema(형태)에서 유래 되었다.</p>
+<p>단순히 리소스가 있는 주소라고 했는데 왜 형태를 따지는 지 궁금할 것이다. 이 url은 클라이언트와 서버가 서로에게 보내는 일종의 공문서의 개념이다.</p>
+<p>모든 공문서가 그런 것은 아니지만, 대체로 공문서들은 지정된 양식을 반드시 지켜야 한다.</p>
+<p>여기에 url을 위해서 정립된 규약(protocol)을 적는다. 다양한 규약들이 있지만, 우리에게 가장 익숙한 규약들은 아래 2 가지 일 것이다.</p>
+<blockquote>
+<p>http, https</p>
+</blockquote>
+<p><strong>http(hyper text transfer protocol)</strong> 은 말 그대로 hyper text 를 주고 받는 규약을 뜻한다.</p>
+<p>hyper text는 서로 뛰어넘어 다닐 수 있는 글을 의미한다. 우리가 흔히 말하는 html(hyper text markup language)가 이 글을 작성하기 위한 언어다. 즉, 단순하게 생각하면  웹 페이지 통신을 위한 규약이라는 뜻이 된다.</p>
+<p><strong>https(hyper text transfer protocol secure)</strong> 는 http에 보안을 추가한 규약이다.</p>
+<p>기존의 http 는 일반 글 형태로 서로 주고받았다. 별도의 처리가 없기 때문에 빨랐지만, 문제는 글을 주고받는 사이에 있는 다른 사람들도 이 글을 온전히 볼 수 있었다.</p>
+<p>이건 심각한 보안 문제를 가지고 왔기 때문에, 암호화와 인증서를 사용하는 새로운 규약이 만들어졌다. 현 시대에는 https 가 아닌 웹페이지는 보안을 이유로 웹브라우저에서 접근을 막기도 한다.</p>
+<p><strong>외우기 드립</strong><br>
+이 형태, 이 스낌(느낌) 알지?</p>
+<h2>authority(어쏘리티)</h2>
+<p>주최자(host)의 정보를 담고 있다.</p>
+<p>scheme 이 보내는 공문서의 양식을 정했다면, authority는 공문서를 받을 주소지를 뜻한다. 이 주소를 표현하는 방법은 크게 ip 주소 와 domain 주소로 나뉜다.</p>
+<p><strong>ip 주소</strong> 는 192.168.0.1 과 같이 숫자로 이루어지는 반면,
+<strong>domain 주소</strong> 는 youtube.com 처럼 단어의 형태로 이루어진다.</p>
+<p>하지만 domain 주소도 결국엔 ip 주소를 가리키는 것과 같다. 직관적으로는 ip 주소는 실제 우리 집 아파트의 주소, domain 주소는 우체국의 주소라고 생각하면 편하다.</p>
+<p>domain 주소로 공문서가 왔을 때, 우체부가 ip 주소에 공문서를 대신 전달해준다. 이 우체부를 dns(domain name server)라고 부른다.</p>
+<p><strong>외우기 드립</strong><br>
+어쏘(어서) 오세요.<br>
+전 이 펜션의 호스트(host)에요.</p>
+<p>ip 주소 보고 오셨어요,<br>
+domain 주소 보고 오셨어요?</p>
+<h2>path(패쓰)</h2>
+<p>우체부가 우리 집 아파트로 공문서를 들고 왔지만 한가지 문제가 있다.</p>
+<p>어느 동 어느 호인지 이제 찾아야 한다.</p>
+<p>다행히 공문서 규약에 따라서 어느 동 어느 호에 가져다 주면 되는지 적혀있다.</p>
+<p>/101동/\1004호/의 형태로 적혀있기 때문에 차근차근 찾아가면 된다.</p>
+<h2>파라미터(parameter)</h2>
+<p>이제 101동 1004호 앞에 도착한 우체부가 문을 두드리고 공문서를 전달하려고 한다.</p>
+<p>그런데 문을 열고 나온 사람이 물었다.</p>
+<p>&quot;누구에게 온 공문서인가요?&quot;</p>
+<p>우체부는 다시 한번 공문서를 살펴본다. 규약에 따라서 누구에게 이 공문서가 가야하는 지 적혀있기 때문이다. 그곳에는 짤막하게 공문서를 받을 사람의 이름이 적혀있다.</p>
+<blockquote>
+<p>?name=춘식</p>
+</blockquote>
+<p>우체부는 춘식이라는 사람을 찾으면 된다는 것을 알았다.</p>
+<p>설명을 들은 사람이 집안을 보고 &quot;춘식아!&quot;라고 외치자, 고양이 한 마리가 토도도 달려왔다. 공문서를 받을 대상은 고양이 였던 것이다!</p>
+<p>이 사람(?)을 찾는 과정을 쿼리(query)라고 한다.</p>
+<p>라틴어 quaerere(찾다) 에서 유래된 쿼리는 url 에서는 '?'로 시작한다. 그러나 쿼리의 내용 자체는 웹서비스 마다 규칙이 조금씩 다르기 때문에 조심해야 한다.</p>
+<p><strong>외우기 드립</strong><br>
+인도에 가면 쿼리(커리)를 찾아야 하나?</p>
+<h2>닻(anchor)</h2>
+<p>공문서를 전달하려고 온 우체부는 이 공문서의 수신자가 고양이 라는 사실을 알고 당황해 하고 있다.</p>
+<p>불행 중 다행으로 공문서에는 &quot;수신자가 고양이일 경우, 오른쪽 발 젤리를 우측 하단 제출용 칸에 찍으세요.&quot; 라고 적혀있었다.</p>
+<p>이것으로 우체부의 모험이 끝났으면 좋겠지만 결코 그렇지 않다.</p>
+<p>우체부가 오른쪽 발 젤리를 공문서에 찍은 다음 다시 우체국으로 가지고 돌아간다. 그리고 우체국에서 고양이 발 젤리 도장을 신청했던 클라이언트에게 재출용 칸을 보낸다.</p>
+<p>만약 이 닻(anchor)이 없었더라면, 우체부는 고양이 춘식이를 그대로 들고 우체국으로 돌아가야 했을 것이다. 그리고 클라이언트에게 고양이를 보냈어야 했다! 클라이언트는 단순히 춘식이의 발 젤리를 보고 싶었을 뿐인데 말이다.</p>
+<p>보트가 특정 지점에 닻(anchor)을 내리고 떠있는 것처럼, 하나의 문서에서 특정 지점을 보고 싶을 때 사용할 수 있다.</p>
+<h2>마무리</h2>
+<p>그래서 원래의 목표대로 <strong>url의 구성 요소 중 쿼리가 무엇인지 실제 웹 서비스의 쿼리를 예시로 설명</strong> 하자면 아래와 같다.</p>
+<p><strong>https://</strong> : https 규약에 따라</p>
+<p><strong>www.youtube.com</strong> : youtube.com 주소지에 있는</p>
+<p><strong>/watch/</strong> : 호실의</p>
+<p><strong>?v=PeLAIPQ_rZo</strong> : v가 PeLAIPQ_rZo 인</p>
+<p>리소스를 요청합니다.</p>
+
+  </article>
+
+  </main>
+  <footer>
+  <p>&copy; gyunam park</p>
+</footer>
+</body>
+</html>
