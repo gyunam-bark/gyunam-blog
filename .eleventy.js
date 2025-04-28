@@ -28,6 +28,18 @@ export default function (eleventyConfig) {
     });
   });
 
+  eleventyConfig.addCollection("tag_weekly", (collectionApi) => {
+    return collectionApi.getFilteredByTag("weekly").sort((a, b) => {
+      return b.date - a.date;
+    });
+  });
+
+  eleventyConfig.addCollection("tag_toy", (collectionApi) => {
+    return collectionApi.getFilteredByTag("toy").sort((a, b) => {
+      return b.date - a.date;
+    });
+  });
+
 
   // 날짜 포맷 필터 추가
   eleventyConfig.addFilter("date", (dateObj) => {

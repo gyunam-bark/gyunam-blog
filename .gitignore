@@ -1,0 +1,2 @@
+# post 작성하는 동안 생성된 _output은 git에 올리지 않는다.
+_output/
