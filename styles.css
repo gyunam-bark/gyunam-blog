@@ -37,6 +37,7 @@ body {
   max-width: 512px;
   margin: 0 auto;
   background-color: #fff;
+  padding-left: 0.5rem;
 }
 
 /* 메인 */
