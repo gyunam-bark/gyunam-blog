@@ -1,6 +1,6 @@
 ---
-title: "[express] request-to-response"
-subtitle: "요청(request)를 받아서 응답(response) 보내는 웹서버 만들기."
+title: "[express] 파라미터 사용하기"
+subtitle: "req.param 받아서 res로 반환해본다."
 tags:
   - express
 layout: layouts/post.njk
@@ -10,23 +10,22 @@ date: 2025-04-28
 
 이번에는 요청(request)를 받아서 응답(response) 하는 걸 조금 써보려고 한다.
 
-## request-to-response 디렉토리 만들기
+## parameter 디렉토리 만들기
 디렉토리 이름, 즉, 프로젝트 이름을 짓는 것은 항상 고민된다.
-나는 단어 약어보다 길게 적는 걸 선호해서 request-to-response라고 지었지만, 아마 보통 req-to-res로 많이 지을 가능성이 높다. 왜냐? 길잖아...
 
 나는 그 약어가 어떤 단어를 축약한건지 궁금해하는 성격이라서, 학습을 하는 동안에는 항상 가능한 원본 단어 그대로 사용하는 것을 선호한다. 팀프로젝트를 할 때엔 어떨지 모르겠다.
 
-request-to-response 디렉토리를 만들고, express 소환 3콤보를 터미널에 순차적으로 입력한다.
+parameter 디렉토리를 만들고, express 소환 3콤보를 터미널에 순차적으로 입력한다.
 
 > npm init -y  
 > npm pkg set type="module"  
 > npm i --save express  
 
-정상적으로 express 설치가 완료되었다면, request-to-response 디렉토리는 아래와 같이 된다.
+정상적으로 express 설치가 완료되었다면, parameter디렉토리는 아래와 같이 된다.
 
 ```text
 
-request-to-response 
+parameter
 ├ node_modules   
 ├ package-lock.json  
 ├ package.json
@@ -45,7 +44,7 @@ javascript의 객체 문법을 그대로 사용해서 추가할 수 있다. scri
 
 ```text
 
-request-to-response  
+parameter  
 ├ node_modules   
 ├ index.js  
 ├ package-lock.json  
@@ -81,7 +80,7 @@ app.listen(port, () => {
 
 기본 주소는 **localhost:3000** 이다.
 
-![1](/resources/express/2025-04-28-request-to-response/1.png)
+![1](/resources/express/2025-04-28-parameter/1.png)
 
 hello,world.가 잘 동작하고 있다.
 
@@ -114,7 +113,7 @@ app.get('/:name', (req, res) => {
 ## 예제 실행하기
 express를 실행하면 놀랍게도.
 
-![1](/resources/express/2025-04-28-request-to-response/1.png)
+![1](/resources/express/2025-04-28-parameter/1.png)
 
 똑같이 나온다.
 
@@ -170,16 +169,18 @@ app.get('/:food', (req, res) => {
 ## 짝수인지 홀수인지 답해주는 웹서버
 이제 간단한 javascript 로직을 넣어서 매개 인자로 들어온 숫자가 짝수인지 홀수인지 답해주는 웹 서버로 발전시켜보자.
 
+hello.com 의 성공으로 우리는 좀 더 고급진(?) 서비스를 개발하기로 했다.
+
+이름하야 홀짝 확인기!  
+
+이 세상 어딘가 있을 단순한 url 만으로 홀짝을 구분하고 싶어하는 사람에게 *www.hello.com\/** 에 숫자만 넣으면 홀짝인지 알려주는 정말 엄청난 서비스다!
+
 ```javascript
 
 import express from 'express'
 
 const app = express();
 const port = 3000;
-
-app.get('/', (req, res) => {
-    res.send(`hello,world.`);
-});
 
 app.get('/:number', (req, res) => {
     const number = req.params.number;
@@ -205,7 +206,7 @@ app.listen(port, () => {
 ```
 간단한 예외처리 코드까지 넣어보았다.
 
-예외처리 코드를 넣게 된 이유는 의도했던 대로 입력이 안 될 수도 있다는 것을 깨달았기 때문이다. 웹 서버를 다시 시작하고 \/cat이 되어 있는 상태에서 웹페이지를 새로고침 했더니 짝수가 나왔다. 내가 아무생각 없이 실수했던 것처럼 다른 사용자들도 그럴 가능성이 매우 높기 때문에, 입력된 값이 숫자가 아닌지 체크하는 코드를 추가했다. 
+예외처리 코드를 넣게 된 이유는 의도했던 대로 입력이 안 될 수도 있다는 것을 깨달았기 때문이다. 웹 서버를 다시 시작하고 \/cat이 되어 있는 상태에서 웹페이지를 새로고침 했더니 짝수가 나왔다. 내가 아무 생각 없이 실수했던 것처럼 다른 사용자들도 그럴 가능성이 매우 높기 때문에, 입력된 값이 숫자가 아닌지 체크하는 코드를 추가했다. 
 
 ## 마무리
 생각보다 훨씬 재밌는 예제였다.
