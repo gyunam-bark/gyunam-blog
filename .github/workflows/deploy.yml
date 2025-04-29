@@ -24,6 +24,9 @@ jobs:
       - name: build 11ty site
         run: npm run build
 
+      - name: add CNAME file
+        run: echo 'www.gyunam.blog' > ./_output/CNAME
+
       - name: deploy togitHub pages
         uses: peaceiris/actions-gh-pages@v3
         with:
