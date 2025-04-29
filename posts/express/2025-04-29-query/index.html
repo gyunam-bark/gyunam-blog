@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="a tiny blog by gyunam park.">
+  <meta name="author" content="Gyunam Park">
+  <!-- OPEN GRAPH -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="gyunam.blog">
+  <!-- 파비콘(favicon) -->
+  <link rel="icon" href="/resources/favicon/favicon.ico" type="image/x-icon">
+  <!-- canonical URL -->
+  <link rel="canonical" href="https://www.gyunam.blog/">
+  
+  <link rel="stylesheet" href="/styles.css">
+  <title>gyunam.blog</title>
+</head>
+<body>
+  <header>
+  <div class="header-container">
+    <a class="header-title" href="/">gyunam.blog</a>
+    <nav class="header-nav">
+      <ul class="header-tag-list">
+        <li class="header-tag-list-item">
+          <a href="/tags/11ty/">11ty (1)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/express/">express (4)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/weekly/">weekly (2)</a>
+        </li>
+         <li class="header-tag-list-item">
+          <a href="/tags/toy/">toy (1)</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+  <main>
+    
+  <article>
+    <h1>[express] 쿼리</h1>
+
+    
+      <p class="subtitle">query와 sqlite3, async, await 를 사용한 todo 서버</p>
+    
+
+    <p>쇠 뿔도 단김에 뽑으라는 말이 있듯이 <strong>[express] 파라미터 활용하기</strong> 에서 만들었던 query를 사용해서 파라미터로 만들었던 코드를 리팩토링 해본다.</p>
+<p>그리고 오늘 강의에서 다뤘던 async, await 를 사용하는 것을 목표로 했다. 이번에도 굳이 express 를 쓰지 않아도 되지만, express 공부도 겸하면 좋으니까 express 로 프로젝트를 생성한다.</p>
+<h2>query 프로젝트 생성</h2>
+<p>이제 npm 까지는 눈을 감고 작성할 수 있게 되었다.</p>
+<blockquote>
+<p>npm init -y</p>
+</blockquote>
+<blockquote>
+<p>npm i --save express</p>
+</blockquote>
+<blockquote>
+<p>npm pkg set type=&quot;module&quot;</p>
+</blockquote>
+<blockquote>
+<p>npm pkg set scripts.dev=&quot;nodemon index.js&quot;</p>
+</blockquote>
+<p>항상 쓰던 패턴은 아니고 명령어가 조금 바뀌었다. node 에서 nodemon 으로 바뀌었는데, nodemon 은 node monitor 의 약자라고 한다. 즉, 항상 node 를 모니터링 하고 있다는 뜻.</p>
+<p>그래서 이전에는 일일이 npm run start 방식으로 진행했던 반면, nodemon을 사용하면 index.js 를 작성하다가 저장만 하면 자동으로 변경사항이 적용된다!</p>
+<p>매번 npm run start 명령어를 작성하지 않아도 되기 때문에, 개발 편의성이 두 배로 늘어났다.</p>
+<h3>sqlite3</h3>
+<p>겸사겸사 데이터베이스도 사용해보고 싶어서 sqlite3 를 적용해보기로 했다.</p>
+<p>다른 관계형데이터베이스도 많은데 sqlite3를 결정한 이유는 일단 설치와 관리가 간단하다는 점이 가장 컸다.</p>
+<p>심지어 별도의 패키지는 설치할 필요가 없다. node.js 안에 sqlite3 가 기본 내장되어있다!</p>
+<h3>디렉토리 구조</h3>
+<p>모든 준비가 완료된 디렉토리는 아래와 같다.</p>
+<pre class="language-text"><code class="language-text">
+query
+├ node_modules
+├ index.js
+├ package-lock.json
+├ package.json
+
+</code></pre>
+<h2>기본 express 코드 입력</h2>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token keyword">import</span> express <span class="token keyword">from</span> <span class="token string">'express'</span>
+<span class="token keyword">import</span> Task <span class="token keyword">from</span> <span class="token string">'./task.mjs'</span>
+
+<span class="token keyword">const</span> app <span class="token operator">=</span> <span class="token function">express</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> port <span class="token operator">=</span> <span class="token number">3000</span>
+
+<span class="token keyword">const</span> query_create <span class="token operator">=</span> <span class="token string">'create'</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> query_search <span class="token operator">=</span> <span class="token string">'search'</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> query_update <span class="token operator">=</span> <span class="token string">'update'</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> query_delete <span class="token operator">=</span> <span class="token string">'delete'</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'/'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">req<span class="token punctuation">,</span> res</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">yeah!</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+app<span class="token punctuation">.</span><span class="token function">listen</span><span class="token punctuation">(</span>port<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Example app listening on port </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>port<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+</code></pre>
+<p>express 코드는 완전 기본 형태로 바꿔두었다. 어차피 내부 로직은 간단했고, 쿼리를 사용하기 위해서는 어차피 파라미터와는 사용법도 다르다.</p>
+<p>그래서 명령어 상수도 그에 맞춰서 수정했다.</p>
+<p>이번에는 데이터베이스를 사용하기 때문에 느낌을 내려고 crud(create read update delete) 에서 따와서 정했다. 다만, read 는 어차피 GET 으로 줄 때 데이터베이스에서 접근해서 읽기만 하면 될 것 같아서 search 로 했다. 절대로 read 글자 수가 나머지랑 안 맞아서 불편했던 게 아니다.</p>
+<p>뭔가 있어보이는 효과가 있다.</p>
+<h2>task 클래스 작성</h2>
+<p>리팩토링이 목적이었기 때문에 기존의 task 를 거의 따라가되, 아쉬웠다고 생각했던 부분 몇 가지를 수정했다.</p>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token comment">// task.mjs</span>
+<span class="token keyword">export</span> <span class="token keyword">const</span> <span class="token constant">TYPE_DEACTIVE</span> <span class="token operator">=</span> <span class="token string">'0'</span>
+<span class="token keyword">export</span> <span class="token keyword">const</span> <span class="token constant">TYPE_ACTIVE</span> <span class="token operator">=</span> <span class="token string">'1'</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">class</span> <span class="token class-name">Task</span> <span class="token punctuation">{</span>
+  #id
+  #description
+  #state
+
+  <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token parameter">id<span class="token punctuation">,</span> description<span class="token punctuation">,</span> state</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>#id <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">#verifyIdArgument</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>#description <span class="token operator">=</span> description
+    <span class="token keyword">this</span><span class="token punctuation">.</span>#state <span class="token operator">=</span> state<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">get</span> <span class="token function">id</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>#id
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">get</span> <span class="token function">description</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>#description
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">get</span> <span class="token function">state</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>#state
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">set</span> <span class="token function">description</span><span class="token punctuation">(</span><span class="token parameter">argument</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>#description <span class="token operator">=</span> argument
+  <span class="token punctuation">}</span>
+
+  <span class="token function">#verifyIdArgument</span><span class="token punctuation">(</span><span class="token parameter">argument</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> typeOfArgument <span class="token operator">=</span> <span class="token keyword">typeof</span> argument
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>typeOfArgument <span class="token operator">===</span> <span class="token string">'number'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>argument<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>typeOfArgument <span class="token operator">===</span> <span class="token string">'string'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> argument
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+      <span class="token keyword">throw</span> <span class="token function">Error</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">[ERROR] </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>typeOfArgument<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">은 사용할 수 없는 자료형입니다.</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token function">toggleState</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>#state <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>#state <span class="token operator">===</span> <span class="token constant">TYPE_ACTIVE</span> <span class="token operator">?</span> <span class="token constant">TYPE_DEACTIVE</span> <span class="token operator">:</span> <span class="token constant">TYPE_ACTIVE</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+</code></pre>
+<p>가장 눈에 띄는 건 id 의 값을 대입하는 부분이다.</p>
+<p>기존에는 id 를 넣을 때 number 로 넣었던 탓에 task 클래스는 id 를 숫자로 넣고 있었던 반면, 실제로 express 에서 url 로 id 값을 받을 때는 문자열로 오는 것을 확인 할 수 있었다.</p>
+<p>물론 서버 로직 코드 내에서 id를 task 에 부여할 때 변환해도 되지만, 솔직히 나 자신을 잘 믿지 못하겠다. 지금이야 작은 프로젝트지만 좀 커지만 나중에 그래야지~ 했다가 까먹을 게 눈에 훤히 보인다.</p>
+<p>그래서 과감하게 private 함수를 사용해서 내부에서만 쓰는 <strong>무조건 문자열로 저장하는</strong> 함수를 만들어서 처리했다.</p>
+<p>애초에 url로 오는 데이터는 객체도 문자열로 변환되어서 오기 때문에 Error 가 발생할 일이 없지만, 왠지 넣으면 멋질 것 같아서 넣었다.</p>
+<p>이번에는 state 라는 변수가 추가되었다. 그냥 문득 filter 메서드를 사용해보고 싶어서 뭔가 필터링 할 조건을 만들었어야 했다. 물론, description 으로 해도 되지만, 그건 뭔가 뽐때가 안 나니까.</p>
+<h2>create 쿼리 만들기</h2>
+<pre class="language-javascript"><code class="language-javascript">
+app<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'/create'</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token parameter">req<span class="token punctuation">,</span> res</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> task <span class="token operator">=</span> req<span class="token punctuation">.</span>query<span class="token punctuation">.</span>task
+
+  res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>task<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+</code></pre>
+<p>쿼리의 코드도 사실 파라미터랑 그렇게 크게 차이 나지 않는다.</p>
+<p>이게 express 의 간편함인가!</p>
+<p>아무튼 서버를 실행하고 웹브라우저의 주소창에 아래와 같이 입력해서 테스트 할 수 있다.</p>
+<blockquote>
+<p>localhost:3000/create/?task=hello</p>
+</blockquote>
+<p>로 입력하면 hello 로 잘 표시된다.</p>
+<h2>sqlite3 초기화하기</h2>
+<p>sqlite3를 node.js 에서 초기화 사용하는 건 생각보다 힘들었다.</p>
+<p>설치도 sqlite3와 sqlite 두 개를 설치해야 한다.</p>
+<blockquote>
+<p>npm i --save sqlite3</p>
+</blockquote>
+<blockquote>
+<p>npm i --save sqlite</p>
+</blockquote>
+<p>설치할 때 부터 node.js 에서 제공하는 패키지인데도 deprecated 되었다고 경고문이 엄청나게 떴다.</p>
+<p>이름만 봐서는 똑같아 보이는데, 역활이 다르다.</p>
+<p>sqlite3는 node.js에서 기본적으로 제공하는 sqlite3 가 맞다. 다만, 기본적으로 제공하다 보니 콜백 기반이다!</p>
+<p>나는 async/await 를 원래 연습하려는 목적도 있기 때문에 Promise 기반으로 사용하고 싶었다.</p>
+<p>그래서 sqlite3를 Promise 기반으로 wrapping, 한번 감싸준게 sqlite 패키지였다.</p>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token keyword">import</span> express <span class="token keyword">from</span> <span class="token string">'express'</span>
+<span class="token keyword">import</span> sqlite3 <span class="token keyword">from</span> <span class="token string">'sqlite3'</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> open <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'sqlite'</span>
+<span class="token keyword">import</span> Task<span class="token punctuation">,</span> <span class="token punctuation">{</span> <span class="token constant">TYPE_ACTIVE</span><span class="token punctuation">,</span> <span class="token constant">TYPE_DEACTIVE</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./task.mjs'</span>
+
+<span class="token keyword">const</span> app <span class="token operator">=</span> <span class="token function">express</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> port <span class="token operator">=</span> <span class="token number">3000</span>
+
+<span class="token keyword">const</span> db <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">open</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">filename</span><span class="token operator">:</span> <span class="token string">':memory:'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">driver</span><span class="token operator">:</span> sqlite3<span class="token punctuation">.</span>Database
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+</code></pre>
+<p>이제 sqlite3를 실행해야 한다.</p>
+<p>문제는 처음 실행 했을 때, database가 없으면 새로 만들어주는 sql 문을 만들어야 했다.</p>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token keyword">await</span> db<span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">
+  CREATE TABLE IF NOT EXISTS database (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    description TEXT NOT NULL,
+    state TEXT DEFAULT </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token constant">TYPE_ACTIVE</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">
+  )
+</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+
+</code></pre>
+<p>길고 복잡해 보이지만 걱정 할 필요가 없다.</p>
+<p>한 줄 씩 직독직해하면 간단(?) 했다. 적어도 읽는 건.</p>
+<blockquote>
+<p>CREATE TABLE IF NOT EXISTS database (</p>
+</blockquote>
+<p>table을 생성한다. 만약 없으면 database 가.</p>
+<p>강의에서 SQL은 도표처럼 데이터를 관리한다고 배웠는데, table이 도표니까, 직관적인 표현이다.</p>
+<blockquote>
+<p>id INTEGER PRIMARY KEY AUTOINCREMENT,</p>
+</blockquote>
+<p>id 라는 요소는 정수(INTEGER)고 고유한 KEY 값을 가지고 자동으로 증가 한다.</p>
+<blockquote>
+<p>description TEXT NOT NULL,</p>
+</blockquote>
+<p>description 이라는 요소는 문자(TEXT) 고, 반드시 들어가야 한다.</p>
+<blockquote>
+<p>state TEXT DEFAULT ${TYPE_ACTIVE}</p>
+</blockquote>
+<p>state 라는 요소는 문자(TEXT) 고, 기본값으로 TYPE_ACTIVE(1) 이 들어간다.</p>
+<p>기본값으로 TYPE_ACTIVE 를 넣은 이유는, 이미 완료한 일을 todo 에 넣지는 않을 것이라 판단해서다. 앞으로 해야하는 일이니까 목록에 추가하지 않을까.</p>
+<p>그런 다음 쿼리로 task 를 받아온 다음에 database 에 넣는 과정이 필요하다.</p>
+<p>넣는 코드도 고생 꽤나 했다. SQL 을 처음 써봐서 다른 예제들을 보면서 이건가? 하면서 고생 좀 했다.</p>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token keyword">const</span> insert <span class="token operator">=</span> <span class="token keyword">await</span> db<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">INSERT INTO database (description, state) VALUES (?, ?)</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> <span class="token punctuation">[</span>description<span class="token punctuation">,</span> <span class="token constant">TYPE_ACTIVE</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+<span class="token keyword">const</span> lastId <span class="token operator">=</span> insert<span class="token punctuation">.</span>lastID
+</code></pre>
+<p>좋은 점은 db.run의 결과로 주는 객체에 lasID 라는 요소가 있다는 것이다.</p>
+<p>지금의 내가 한 작업처럼 직전에 추가한 아이템을 가지고 싶을 때 굉장히 편하다. 물론 어디까지나 고유 ID 만 주기 때문에, 데이터베이스에서 내가 검색해서 가져와야 한다.</p>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token keyword">const</span> created <span class="token operator">=</span> <span class="token keyword">await</span> db<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">SELECT * FROM database WHERE id = ?</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> <span class="token punctuation">[</span>lastId<span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+</code></pre>
+<blockquote>
+<p>SELECT * FROM database WHERE id = ?</p>
+</blockquote>
+<p>이 sql 문도 직독직해를 해보니 이해가 되었다.</p>
+<p>선택한다 *(모든 파일) database에 있는 id = lastID 인</p>
+<ul>
+<li>는 모듈화에서 import/export 배울 때 나왔어서 바로 이해할 수 있었다.</li>
+</ul>
+<p>그래서 create 쿼리만 구현했을 때 전체 코드는 아래와 같다.</p>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token keyword">import</span> express <span class="token keyword">from</span> <span class="token string">'express'</span>
+<span class="token keyword">import</span> sqlite3 <span class="token keyword">from</span> <span class="token string">'sqlite3'</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> open <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'sqlite'</span>
+<span class="token keyword">import</span> Task<span class="token punctuation">,</span> <span class="token punctuation">{</span> <span class="token constant">TYPE_ACTIVE</span><span class="token punctuation">,</span> <span class="token constant">TYPE_DEACTIVE</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./task.mjs'</span>
+
+<span class="token keyword">const</span> app <span class="token operator">=</span> <span class="token function">express</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> port <span class="token operator">=</span> <span class="token number">3000</span>
+
+<span class="token keyword">const</span> db <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">open</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">filename</span><span class="token operator">:</span> <span class="token string">':memory:'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">driver</span><span class="token operator">:</span> sqlite3<span class="token punctuation">.</span>Database
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+<span class="token keyword">await</span> db<span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">
+  CREATE TABLE IF NOT EXISTS database (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    description TEXT NOT NULL,
+    state TEXT DEFAULT </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token constant">TYPE_ACTIVE</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">
+  )
+</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+
+app<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'/create'</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token parameter">req<span class="token punctuation">,</span> res</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">try</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> description <span class="token operator">=</span> req<span class="token punctuation">.</span>query<span class="token punctuation">.</span>description
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>description<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token string">'description 파라미터가 필요합니다.'</span><span class="token punctuation">)</span>
+      <span class="token keyword">return</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">const</span> insert <span class="token operator">=</span> <span class="token keyword">await</span> db<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">INSERT INTO database (description, state) VALUES (?, ?)</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> <span class="token punctuation">[</span>description<span class="token punctuation">,</span> <span class="token constant">TYPE_ACTIVE</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">const</span> lastId <span class="token operator">=</span> insert<span class="token punctuation">.</span>lastID
+
+    <span class="token keyword">const</span> created <span class="token operator">=</span> <span class="token keyword">await</span> db<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">SELECT * FROM database WHERE id = ?</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> <span class="token punctuation">[</span>lastId<span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">const</span> task <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Task</span><span class="token punctuation">(</span>created<span class="token punctuation">.</span>id<span class="token punctuation">,</span> created<span class="token punctuation">.</span>description<span class="token punctuation">,</span> <span class="token function">String</span><span class="token punctuation">(</span>created<span class="token punctuation">.</span>state<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+    res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">[</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>task<span class="token punctuation">.</span>id<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">] </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>task<span class="token punctuation">.</span>description<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> is </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>task<span class="token punctuation">.</span>state<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+
+  <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span>
+    res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+app<span class="token punctuation">.</span><span class="token function">listen</span><span class="token punctuation">(</span>port<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Example app listening on port </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>port<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+</code></pre>
+<p>하나하나 따져보면 바뀐 코드는 얼마 없는데 여기까지 4 시간이 걸렸다.</p>
+<p>물론 sqlite3를 사용하기 위한 삽질도 있었고, sql을 이해하려고 든 시간도 있어서 손해 본 시간은 아니다.</p>
+<p>특히 sql은 곧바로 튜토리얼을 보기 보다는 남들이 써둔 코드를 보고 혼자 이런건가? 하는 시간을 일부러 가졌다. 앞으로도 sql 을 계속 보게 될텐데, 조금이라도 유추(?) 해보는 능력을 키우고 싶었다.</p>
+<h2>delete 만들기</h2>
+<p>그래서 앞에서 create 를 만든 경험 때문에 delete 는 조금 더 빨라졌다.</p>
+<pre class="language-javascript"><code class="language-javascript">
+app<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'/delete'</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token parameter">req<span class="token punctuation">,</span> res</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">try</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> id <span class="token operator">=</span> req<span class="token punctuation">.</span>query<span class="token punctuation">.</span>id
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>id<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token string">'id 파라미터가 필요합니다.'</span><span class="token punctuation">)</span>
+      <span class="token keyword">return</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">const</span> search <span class="token operator">=</span> <span class="token keyword">await</span> db<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">SELECT * FROM database WHERE id = ?</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> <span class="token punctuation">[</span>id<span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>search<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token string">'해당 ID를 가진 항목을 찾을 수 없습니다.'</span><span class="token punctuation">)</span>
+      <span class="token keyword">return</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">const</span> task <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Task</span><span class="token punctuation">(</span>search<span class="token punctuation">.</span>id<span class="token punctuation">,</span> search<span class="token punctuation">.</span>description<span class="token punctuation">,</span> <span class="token function">String</span><span class="token punctuation">(</span>search<span class="token punctuation">.</span>state<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">await</span> db<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">DELETE FROM database WHERE id = ?</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> <span class="token punctuation">[</span>id<span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+    res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">DELETE : [</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>task<span class="token punctuation">.</span>id<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">] </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>task<span class="token punctuation">.</span>description<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> is </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>task<span class="token punctuation">.</span>state<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span>
+    res<span class="token punctuation">.</span>send<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+</code></pre>
+<p>사실 create 랑 비교해서 크게 다른 점은 sql 문 뿐이다.</p>
+<blockquote>
+<p>const search = await db.run(<code>DELETE FROM database WHERE id = ?</code>, [id])</p>
+</blockquote>
+<p>삭제한다 database 로부터 id=id 인</p>
+<p>그래도 create에서 고생해서 그런가 꽤 빨리 리팩토링을 완료했다.</p>
+<h2>update 만들기</h2>
+<p>업데이트는 search 하고 update sql은 문을 실행한다.</p>
+<p>말로는 한 줄이지만 이것도 시간이 꽤 걸렸다. 아무래도 아직 sql 문이 바로 떠오르지 않는게 가장 큰 이유겠지.</p>
+<pre class="language-javascript"><code class="language-javascript">
+app<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'/update'</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token parameter">req<span class="token punctuation">,</span> res</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">try</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> id <span class="token operator">=</span> req<span class="token punctuation">.</span>query<span class="token punctuation">.</span>id
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>id<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token string">'id 파라미터가 필요합니다.'</span><span class="token punctuation">)</span>
+      <span class="token keyword">return</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">const</span> search <span class="token operator">=</span> <span class="token keyword">await</span> db<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">SELECT * FROM database WHERE id = ?</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> <span class="token punctuation">[</span>id<span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>search<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token string">'해당 ID를 가진 항목이 없습니다.'</span><span class="token punctuation">)</span>
+      <span class="token keyword">return</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">const</span> task <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Task</span><span class="token punctuation">(</span>search<span class="token punctuation">.</span>id<span class="token punctuation">,</span> search<span class="token punctuation">.</span>description<span class="token punctuation">,</span> <span class="token function">String</span><span class="token punctuation">(</span>search<span class="token punctuation">.</span>state<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    task<span class="token punctuation">.</span><span class="token function">toggleState</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">await</span> db<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">UPDATE database SET state = ? WHERE id = ?</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> <span class="token punctuation">[</span>task<span class="token punctuation">.</span>state<span class="token punctuation">,</span> task<span class="token punctuation">.</span>id<span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+    res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">UPDATE : [</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>task<span class="token punctuation">.</span>id<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">] </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>task<span class="token punctuation">.</span>description<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> is </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>task<span class="token punctuation">.</span>state<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span>
+    res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+</code></pre>
+<p>검색하는 sql은 delete 와 유사하기 때문에 따로 정리하지 않는다.</p>
+<p>update sql 도 직독직해 하면 이해하기 쉽다.</p>
+<blockquote>
+<p>UPDATE database SET state = ? WHERE id = ?</p>
+</blockquote>
+<p>최신화한다 database를 state 값을 task.state 만큼 id 가 task.id 인</p>
+<p>웃긴게 sql 문을 읽으면 오, 별로 안 어려운데? 싶은데 정작 작성하려고 하면 머리가 하얘진다.</p>
+<p>프로그래밍 언어처럼 sql 도 자주 작성해봐야 익숙해지겠지. 데이터베이스 강의 까지는 조금 시간이 있으니 한동안 sqlite3를 활용하면서 익숙해지는 것을 목표로 하자.</p>
+<h2>search 만들기</h2>
+<p>드디어 대망의 마지막 기능이다.</p>
+<p>체력적으로도 바닥 나 있던 상황이었지만, 마지막이니 만큼 조금은 고급지게 가보기로 했다.</p>
+<pre class="language-javascript"><code class="language-javascript">
+app<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'/search'</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token parameter">req<span class="token punctuation">,</span> res</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">try</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> id <span class="token operator">=</span> req<span class="token punctuation">.</span>query<span class="token punctuation">.</span>id
+    <span class="token keyword">const</span> description <span class="token operator">=</span> req<span class="token punctuation">.</span>query<span class="token punctuation">.</span>description
+    <span class="token keyword">const</span> state <span class="token operator">=</span> req<span class="token punctuation">.</span>query<span class="token punctuation">.</span>state
+
+    <span class="token keyword">const</span> options <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token keyword">const</span> values <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>id<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      options<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">id = ?</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+      values<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>description<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      options<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token string">'description LIKE ?'</span><span class="token punctuation">)</span>
+      values<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">%</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>description<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">%</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>state<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      options<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token string">'state = ?'</span><span class="token punctuation">)</span>
+      values<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">let</span> query <span class="token operator">=</span> <span class="token string">'SELECT * FROM database'</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>options<span class="token punctuation">.</span>length <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      query <span class="token operator">+=</span> <span class="token string">' WHERE '</span> <span class="token operator">+</span> options<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">' AND '</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">const</span> search <span class="token operator">=</span> <span class="token keyword">await</span> db<span class="token punctuation">.</span><span class="token function">all</span><span class="token punctuation">(</span>query<span class="token punctuation">,</span> values<span class="token punctuation">)</span>
+    <span class="token keyword">const</span> taskList <span class="token operator">=</span> search<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token parameter">item</span> <span class="token operator">=></span> <span class="token keyword">new</span> <span class="token class-name">Task</span><span class="token punctuation">(</span>item<span class="token punctuation">.</span>id<span class="token punctuation">,</span> item<span class="token punctuation">.</span>description<span class="token punctuation">,</span> <span class="token function">String</span><span class="token punctuation">(</span>item<span class="token punctuation">.</span>state<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">let</span> html <span class="token operator">=</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">&lt;h1>SEARCH&lt;/h1></span><span class="token template-punctuation string">`</span></span>
+
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> task <span class="token keyword">of</span> taskList<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      html <span class="token operator">+=</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">&lt;p>\[</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>task<span class="token punctuation">.</span>id<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">\] </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>task<span class="token punctuation">.</span>description<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> is </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>task<span class="token punctuation">.</span>state<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">&lt;/p></span><span class="token template-punctuation string">`</span></span>
+    <span class="token punctuation">}</span>
+
+    res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span>html<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span>
+    res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+</code></pre>
+<p>무려, id, description, state 세 가지 조건 검색에 더해서, 아무런 쿼리가 없을 때엔 * 로 전체 리스트를 받아온다!</p>
+<p>이때까지 위에서 사용한 모든 sql 문을 응용하고 복습하기 위한 대 출혈 서비스다.</p>
+<p>뭐.. 이렇게까지 해도 sql 어떻게 썼지? 하고 위에가서 다시 보고 썼다. 그래도 키워드는 대충 떠오르니까 오늘 처음 쓴 것 치고는 꽤 학습이 되었다.</p>
+<p>html 코드가 들어가있는데, 처음에는 console.log 처럼 반복문으로 돌렸더니, 에러가 발생했다. res.send 는 완성된 하나의 문서를 보내줘야 한다.</p>
+<p>그리고 그 문서의 가장 많이 쓰이는 양식이 json 이거나 html 이란다! 신나서 html 로 테스트 하고 나니, 어라, 그럼 처음부터 json 으로 했어도 됐을 것 같은데 란 생각이 들었다.</p>
+<p>왜냐면 강의에서 배웠던 api 들은 json 으로 반환했던 기억이 있었다. 그리고 GET 뿐 아니라 POST 같이 다른 메소드들도 있었는데, 이번에는 app.get 만으로 작업을 했네.. 다음에는 다양한 걸 써봐야겠다.</p>
+<h2>마무리</h2>
+<p>우리의 웹 서버에 쿼리를 보내면 아래와 같이 동작하는 모습을 볼 수 있다.</p>
+<p>create
+<img src="/resources/express/2025-04-30-query/1.png" alt="1">
+update
+<img src="/resources/express/2025-04-30-query/2.png" alt="2">
+delete
+<img src="/resources/express/2025-04-30-query/3.png" alt="3">
+search
+<img src="/resources/express/2025-04-30-query/4.png" alt="4"></p>
+<p>이제 슬슬 등 한 쪽이 찌릿찌릿 가려울 정도로 피곤해졌을 때 간신히 예제 학습이 끝났다.</p>
+<p>내가 하는 학습은 가능한 배운 걸 실제로 써먹는 예제를 스스로 만드는 방법이 항상 추가적인 시간과 노력이 많이 들어간다.</p>
+<p>그래도 내 성향이 이런 걸 어떡하나.</p>
+<p>그리고 진짜 소소한 변경점이긴 한데 따옴표(;)가 사라졌다.</p>
+<p>요즘 깃허브의 코드들을 보면서 개인적으로 괜찮네~ 싶은 코드 스타일을 부분적으로 따라해보고 있다.</p>
+<p>조만간 나만의 스타일이 확립되기를..</p>
+
+  </article>
+
+  </main>
+  <footer>
+  <p>&copy; gyunam park</p>
+</footer>
+</body>
+</html>

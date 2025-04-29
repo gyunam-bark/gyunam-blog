@@ -26,10 +26,10 @@
           <a href="/tags/11ty/">11ty (1)</a>
         </li>
         <li class="header-tag-list-item">
-          <a href="/tags/express/">express (2)</a>
+          <a href="/tags/express/">express (4)</a>
         </li>
         <li class="header-tag-list-item">
-          <a href="/tags/weekly/">weekly (1)</a>
+          <a href="/tags/weekly/">weekly (2)</a>
         </li>
          <li class="header-tag-list-item">
           <a href="/tags/toy/">toy (1)</a>
@@ -669,8 +669,8 @@ hi
 <p>이제 실행해보면 내가 원하는 대로 동작을 한다. 문제는 게임을 하는 동안은 문제가 없는데 게임을 끄고 나면 문제가 발생했다. 에러 코드를 보고 나니 원인은 크게 두가지로 나뉘었다.</p>
 <ol>
 <li>
-<p>await 는 async 함수 안에 써야 한다.
-단순히 절차적으로 진행하면 되겠거니 하고 쭉 썼는데, 별도의 async 함수 내부에서 써야 하는 것이었다. 언뜻보기에  await 가 잘 동작하는 것처럼 보였기에 문제가 없을 줄 알았다.</p>
+<p>await 는 가능한 async 함수 안에 써야 한다.
+단순히 절차적으로 진행하면 되겠거니 하고 쭉 썼는데, 가능한 별도의 async 함수 내부에서 써야 하는 게 좋다고 한다. 원래는 async로 감싸진 함수 안에서만 된다고 하는데, 아마도 하위호환 때문에 가능하게 해둔 것 같아 보인다.</p>
 </li>
 <li>
 <p>위의 이유로 비동기가 정상적으로 동작하지 않아서 COMMAND_QUIT 의 break; 후에 다시 question 을 물었다.

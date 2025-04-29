@@ -26,10 +26,10 @@
           <a href="/tags/11ty/">11ty (1)</a>
         </li>
         <li class="header-tag-list-item">
-          <a href="/tags/express/">express (2)</a>
+          <a href="/tags/express/">express (4)</a>
         </li>
         <li class="header-tag-list-item">
-          <a href="/tags/weekly/">weekly (1)</a>
+          <a href="/tags/weekly/">weekly (2)</a>
         </li>
          <li class="header-tag-list-item">
           <a href="/tags/toy/">toy (1)</a>
@@ -41,27 +41,26 @@
   <main>
     
   <article>
-    <h1>[express] request-to-response</h1>
+    <h1>[express] 파라미터 사용하기</h1>
 
     
-      <p class="subtitle">요청(request)를 받아서 응답(response) 보내는 웹서버 만들기.</p>
+      <p class="subtitle">req.param 받아서 res로 반환해본다.</p>
     
 
     <p>지난 번 hello-world 프로젝트는 정해진 대답만 해서 조금 밋밋하다.</p>
 <p>이번에는 요청(request)를 받아서 응답(response) 하는 걸 조금 써보려고 한다.</p>
-<h2>request-to-response 디렉토리 만들기</h2>
-<p>디렉토리 이름, 즉, 프로젝트 이름을 짓는 것은 항상 고민된다.
-나는 단어 약어보다 길게 적는 걸 선호해서 request-to-response라고 지었지만, 아마 보통 req-to-res로 많이 지을 가능성이 높다. 왜냐? 길잖아...</p>
+<h2>parameter 디렉토리 만들기</h2>
+<p>디렉토리 이름, 즉, 프로젝트 이름을 짓는 것은 항상 고민된다.</p>
 <p>나는 그 약어가 어떤 단어를 축약한건지 궁금해하는 성격이라서, 학습을 하는 동안에는 항상 가능한 원본 단어 그대로 사용하는 것을 선호한다. 팀프로젝트를 할 때엔 어떨지 모르겠다.</p>
-<p>request-to-response 디렉토리를 만들고, express 소환 3콤보를 터미널에 순차적으로 입력한다.</p>
+<p>parameter 디렉토리를 만들고, express 소환 3콤보를 터미널에 순차적으로 입력한다.</p>
 <blockquote>
 <p>npm init -y<br>
 npm pkg set type=&quot;module&quot;<br>
 npm i --save express</p>
 </blockquote>
-<p>정상적으로 express 설치가 완료되었다면, request-to-response 디렉토리는 아래와 같이 된다.</p>
+<p>정상적으로 express 설치가 완료되었다면, parameter디렉토리는 아래와 같이 된다.</p>
 <pre class="language-text"><code class="language-text">
-request-to-response 
+parameter
 ├ node_modules   
 ├ package-lock.json  
 ├ package.json
@@ -75,7 +74,7 @@ request-to-response
 <h2>index.js 파일 만들기</h2>
 <p>이제 <strong>index.js</strong> 를 만들, 기본적인 express 프로젝트의 구조는 완성된다.</p>
 <pre class="language-text"><code class="language-text">
-request-to-response  
+parameter  
 ├ node_modules   
 ├ index.js  
 ├ package-lock.json  
@@ -104,7 +103,7 @@ app<span class="token punctuation">.</span><span class="token function">listen</
 <p>npm run start</p>
 </blockquote>
 <p>기본 주소는 <strong>localhost:3000</strong> 이다.</p>
-<p><img src="/resources/express/2025-04-28-request-to-response/1.png" alt="1"></p>
+<p><img src="/resources/express/2025-04-28-parameter/1.png" alt="1"></p>
 <p>hello,world.가 잘 동작하고 있다.</p>
 <blockquote>
 <p>ctrl+c 두 번</p>
@@ -128,7 +127,7 @@ app<span class="token punctuation">.</span><span class="token function">get</spa
 <p>참고로 두번째 res.send 코드는 따옴표(')가 아니라 백틱(`)으로 변경되어있다. 나는 귀찮아서 (거의) 모든 문자열을 백틱(`)으로 처리한다.</p>
 <h2>예제 실행하기</h2>
 <p>express를 실행하면 놀랍게도.</p>
-<p><img src="/resources/express/2025-04-28-request-to-response/1.png" alt="1"></p>
+<p><img src="/resources/express/2025-04-28-parameter/1.png" alt="1"></p>
 <p>똑같이 나온다.</p>
 <p>코드를 분명 수정했는데, 변한 것이 없어 보인다. 하지만 여기서 주소창에 약간의 수정을 더해보자.</p>
 <blockquote>
@@ -165,15 +164,14 @@ app<span class="token punctuation">.</span><span class="token function">get</spa
 </code></pre>
 <h2>짝수인지 홀수인지 답해주는 웹서버</h2>
 <p>이제 간단한 javascript 로직을 넣어서 매개 인자로 들어온 숫자가 짝수인지 홀수인지 답해주는 웹 서버로 발전시켜보자.</p>
+<p>hello.com 의 성공으로 우리는 좀 더 고급진(?) 서비스를 개발하기로 했다.</p>
+<p>이름하야 홀짝 확인기!</p>
+<p>이 세상 어딘가 있을 단순한 url 만으로 홀짝을 구분하고 싶어하는 사람에게 <em>www.hello.com/</em>* 에 숫자만 넣으면 홀짝인지 알려주는 정말 엄청난 서비스다!</p>
 <pre class="language-javascript"><code class="language-javascript">
 <span class="token keyword">import</span> express <span class="token keyword">from</span> <span class="token string">'express'</span>
 
 <span class="token keyword">const</span> app <span class="token operator">=</span> <span class="token function">express</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token keyword">const</span> port <span class="token operator">=</span> <span class="token number">3000</span><span class="token punctuation">;</span>
-
-app<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'/'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">req<span class="token punctuation">,</span> res</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
-    res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">hello,world.</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 app<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'/:number'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">req<span class="token punctuation">,</span> res</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
     <span class="token keyword">const</span> number <span class="token operator">=</span> req<span class="token punctuation">.</span>params<span class="token punctuation">.</span>number<span class="token punctuation">;</span>
@@ -197,7 +195,7 @@ app<span class="token punctuation">.</span><span class="token function">listen</
 
 </code></pre>
 <p>간단한 예외처리 코드까지 넣어보았다.</p>
-<p>예외처리 코드를 넣게 된 이유는 의도했던 대로 입력이 안 될 수도 있다는 것을 깨달았기 때문이다. 웹 서버를 다시 시작하고 /cat이 되어 있는 상태에서 웹페이지를 새로고침 했더니 짝수가 나왔다. 내가 아무생각 없이 실수했던 것처럼 다른 사용자들도 그럴 가능성이 매우 높기 때문에, 입력된 값이 숫자가 아닌지 체크하는 코드를 추가했다.</p>
+<p>예외처리 코드를 넣게 된 이유는 의도했던 대로 입력이 안 될 수도 있다는 것을 깨달았기 때문이다. 웹 서버를 다시 시작하고 /cat이 되어 있는 상태에서 웹페이지를 새로고침 했더니 짝수가 나왔다. 내가 아무 생각 없이 실수했던 것처럼 다른 사용자들도 그럴 가능성이 매우 높기 때문에, 입력된 값이 숫자가 아닌지 체크하는 코드를 추가했다.</p>
 <h2>마무리</h2>
 <p>생각보다 훨씬 재밌는 예제였다.</p>
 <p>response에 html 태그와 css 코드가 들어가면 더 예쁜 결과물이 나왔겠지만, express 의 기본적인 동작을 확인하는 게 목적이었으므로 만족한다.</p>
