@@ -1,6 +1,6 @@
 ---
 title: "[express] hello,world."
-subtitle: "express 개발환경 설정 및 hello,world. 을 보내주는 웹서버 만들기."
+subtitle: "express 개발환경 설정 및 hello,world. 을 보내주는 웹서버를 만들어 본다."
 tags:
   - express
 layout: layouts/post.njk
