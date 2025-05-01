@@ -158,6 +158,10 @@ const items = response.data.collection.items
 
 fetch 를 썼을 때처럼 response.json() 을 하려니까 안 되는 것이 아닌가! 한참을 이리저리 시도하다가 저런 형태로 받아와야 한다는 것을 알게 되었다. 
 
+좀 더 정확하게 말하면 미리 json 으로 바꿔져서 객체를 받는 정도의 차이가 있다.
+
+.collection.items 는 nasa 가 보내주는 구조 형태로 보인다.
+
 ## 이미지 표시
 이때까지는 텍스트로만 결과값을 내면 됐었기 때문에 신경 안 쓰고 있었지만, 이번에는 이미지를 출력해야하는 관계로 res.send() 에 들어갈 html 코드도 동적으로 만든다.
 
