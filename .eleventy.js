@@ -34,6 +34,12 @@ export default function (eleventyConfig) {
     });
   });
 
+  eleventyConfig.addCollection("tag_sprinter", (collectionApi) => {
+    return collectionApi.getFilteredByTag("sprinter").sort((a, b) => {
+      return b.date - a.date;
+    });
+  });
+
   eleventyConfig.addCollection("tag_toy", (collectionApi) => {
     return collectionApi.getFilteredByTag("toy").sort((a, b) => {
       return b.date - a.date;

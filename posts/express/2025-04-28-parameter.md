@@ -121,7 +121,7 @@ express를 실행하면 놀랍게도.
 
 > localhost:3000/cat
 
-![2](/resources/express/2025-04-28-request-to-response/2.png)
+![2](/resources/express/2025-04-28-parameter/2.png)
 
 cat 말고 다른 것들을 넣어보자. 한국어를 넣어도 문제없이 동작한다!
 
