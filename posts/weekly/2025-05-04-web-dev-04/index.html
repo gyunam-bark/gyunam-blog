@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="a tiny blog by gyunam park.">
+  <meta name="author" content="Gyunam Park">
+  <!-- OPEN GRAPH -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="gyunam.blog">
+  <!-- 파비콘(favicon) -->
+  <link rel="icon" href="/resources/favicon/favicon.ico" type="image/x-icon">
+  <!-- canonical URL -->
+  <link rel="canonical" href="https://www.gyunam.blog/">
+  
+  <link rel="stylesheet" href="/styles.css">
+  <title>gyunam.blog</title>
+</head>
+<body>
+  <header>
+  <div class="header-container">
+    <a class="header-title" href="/">gyunam.blog</a>
+    <nav class="header-nav">
+      <ul class="header-tag-list">
+        <li class="header-tag-list-item">
+          <a href="/tags/11ty/">11ty (1)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/express/">express (5)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/weekly/">weekly (6)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/sprinter/">sprinter (1)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/toy/">toy (2)</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+  <main>
+    
+  <article>
+    <h1>[weekly] [nb] 웹 개발 시작하기(4)</h1>
+
+    
+      <p class="subtitle">프로미스(promise)의 3가지 상태에 대해 설명해 주세요.</p>
+    
+
+    <h2>약속(promise)</h2>
+<p>javascript 에서 비동기 프로그래밍을 보다 편하고 직관적이게 하기 위해 만든 기능이다.</p>
+<h3>es6(2015) 공식 표준화</h3>
+<p>javascript 로 비동기 작업을 많이 하게 되면서, 공통된 표준 문법으로 비동기 작업을 할 수 있도록 규정했다.</p>
+<p>이때 아래의 조건을 충족할 수 있도록 여러 프로그래밍 언어에서 개념을 차용해왔다.</p>
+<ol>
+<li>비동기 작업을 값 처럼 사용</li>
+<li>중첩이 아니라  체이닝(chaining) 으로 흐름 작성</li>
+<li>에러 처리 통합</li>
+</ol>
+<h3>e 언어</h3>
+<p>공식적으로 promise 라는 용어와 개념이 명확하게 사용된 언어는 e 언어(1990년대 중반)다.</p>
+<h2>상품 택배 배송</h2>
+<p>promise 의 과정은 대단히 단순하다.</p>
+<p>우리가 쿠팡에서 물건을 샀을 때 택배로 배송오는 걸 생각하면 편하다.</p>
+<h3>deleivery-product.mjs 코드</h3>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token comment">// deleivery-product.mjs</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">deliverProduct</span><span class="token punctuation">(</span><span class="token parameter">isAddressCorrect <span class="token operator">=</span> <span class="token boolean">true</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Promise</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">resolve<span class="token punctuation">,</span> reject</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"배송 중 : 택배 집하소 도착(pending)"</span><span class="token punctuation">)</span>
+
+    <span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>isAddressCorrect<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">resolve</span><span class="token punctuation">(</span><span class="token string">"배송 성공 : 택배 도착(fulfilled)"</span><span class="token punctuation">)</span>
+      <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        <span class="token function">reject</span><span class="token punctuation">(</span><span class="token string">"배송 실패 : 주소 오류(rejected)"</span><span class="token punctuation">)</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+</code></pre>
+<h3>index.js 코드</h3>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token comment">// index.js</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> deliverProduct <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./delivery-product.mjs'</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"택배 배송 시작"</span><span class="token punctuation">)</span>
+
+<span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">trackProduct</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">try</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">deliverProduct</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"성공:"</span><span class="token punctuation">,</span> result<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>error<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"실패:"</span><span class="token punctuation">,</span> error<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token function">trackProduct</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+</code></pre>
+<h3>배송 시작</h3>
+<pre class="language-javascript"><code class="language-javascript">
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"택배 배송 시작"</span><span class="token punctuation">)</span>
+
+</code></pre>
+<p>쿠팡이 주문을 받고 택배 배송을 시작했다.</p>
+<h3>대기(pending)</h3>
+<p>아직 배송 중이기 때문에 해당 배송이 성공이었는지, 실패였는지 알 수 없다.</p>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Promise</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">resolve<span class="token punctuation">,</span> reject</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"배송 중 : 택배 집하소 도착(pending)"</span><span class="token punctuation">)</span>
+  <span class="token comment">// ...</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+</code></pre>
+<p>쿠팡에서 물건을 택배 집하소에 가져다 두었다.</p>
+<p>이제 쿠팡맨들이 각자 담당한 지점에 따라서 이 물건을 가지고 배송을 이어갈 것이다.</p>
+<h3>성공(fulfilled)</h3>
+<p>주소가 정확하게 입력이 되었다면 배송은 문제없이 진행될 것이다.</p>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>isAddressCorrect<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">resolve</span><span class="token punctuation">(</span><span class="token string">"배송 성공 : 택배 도착(fulfilled)"</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span> <span class="token comment">// ...</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span>
+
+</code></pre>
+<p>promise 에서는 이 성공한 결과를 <strong>resolve()</strong> 에 담아서 보낼 수 있다.</p>
+<p>아까 상기한 <strong>1. 비동기 작업을 값 처럼 사용</strong> 의 경우가 바로 이것이다.</p>
+<h3>실패(rejected)</h3>
+<p>하지만 배송 주소가 잘못 입력되었을 경우 물건은 다른 주소에 배송된다.</p>
+<p>쿠팡 입장에서는 적힌 주소대로 보낸 것이긴 하지만, 어쨋든 우리 입장에서는 택배가 배송오지 못했다.</p>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token comment">//...</span>
+  <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    <span class="token function">reject</span><span class="token punctuation">(</span><span class="token string">"배송 실패 : 주소 오류(rejected)"</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span>
+
+</code></pre>
+<p>이때 javascript 는 <strong>reject()</strong> 에 담아서 오류를 보낸다.</p>
+<h2>async, await</h2>
+<p>직관적인 단어 비동기(async) 기다림(await) 을 사용해서 비동기 프로그래밍이 가능하다.</p>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">example</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">try</span><span class="token punctuation">{</span>
+    <span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">something</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span> <span class="token keyword">catch</span><span class="token punctuation">(</span>error<span class="token punctuation">)</span><span class="token punctuation">{</span><span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+</code></pre>
+<p>표준으로 정립된 문법에서는 await 는 반드시 async 가 사용된 함수 안에서 사용되어야 한다.</p>
+<p>간혹 그냥 .js 파일 안에서 바로 쓰는 경우가 있는데, 그 경우엔 동작은 한다.</p>
+<p>하위호환성 과 여러가지 이유로 가능은 하게 해둔 것인데, 의도치 않은 버그가 생길 수 있다. 그리고 그것에 관해서는 프로그래머 본인의 책임일 뿐이다.</p>
+<p>그래서 무조건 await 는 async 로 감싸진 함수에서 꼭 쓸 것.</p>
+<h2>try, catch</h2>
+<p>async 함수를 만들 때는 try {} catch(){} 를 항상 셋트로 사용하자.</p>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">example</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">try</span><span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'good'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span> <span class="token keyword">catch</span><span class="token punctuation">(</span>error<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">'bad : ${error}'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+</code></pre>
+<p>express 를 사용하다보면 수없이 api 요청과 응답을 받는데 이때 마다 에러를 확인하기가 편하다.</p>
+<p>async 를 사용할 때는 그냥 항상 기본값으로 쓴다는 생각으로 쓰자.</p>
+<h2>마무리</h2>
+<p>promise 를 객체로 만들어서 쓰는 것은 처음 해봤다.</p>
+<p>기존에 만들어져 있는 기능들을 가져와서 쓸 때 async, await 를 많이 썼는데, 이번에 Promise 객체로 setTimeOut 을 감싸서 사용하니까 어떻게 써먹는지 이해가 되었다.</p>
+<p>setTimeOut 은 Promise 객체가 아니라서 Promise 로 감싸면 await 로 딜레이를 줄 수 있다.</p>
+<p>그런데 실무에서 이 setTimeOut 을 쓸지는 잘 모르겠다.</p>
+<p>굳이 쓴다면 의도적으로 응답 시간을 넘겨서 timeout 을 테스트하는 정도..?</p>
+
+  </article>
+
+  </main>
+  <footer>
+  <p>&copy; gyunam park</p>
+</footer>
+</body>
+</html>

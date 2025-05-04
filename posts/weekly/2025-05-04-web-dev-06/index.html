@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="a tiny blog by gyunam park.">
+  <meta name="author" content="Gyunam Park">
+  <!-- OPEN GRAPH -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="gyunam.blog">
+  <!-- 파비콘(favicon) -->
+  <link rel="icon" href="/resources/favicon/favicon.ico" type="image/x-icon">
+  <!-- canonical URL -->
+  <link rel="canonical" href="https://www.gyunam.blog/">
+  
+  <link rel="stylesheet" href="/styles.css">
+  <title>gyunam.blog</title>
+</head>
+<body>
+  <header>
+  <div class="header-container">
+    <a class="header-title" href="/">gyunam.blog</a>
+    <nav class="header-nav">
+      <ul class="header-tag-list">
+        <li class="header-tag-list-item">
+          <a href="/tags/11ty/">11ty (1)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/express/">express (5)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/weekly/">weekly (6)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/sprinter/">sprinter (1)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/toy/">toy (2)</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+  <main>
+    
+  <article>
+    <h1>[weekly] [nb] 웹 개발 시작하기(6)</h1>
+
+    
+      <p class="subtitle">fetch api 와 비교했을 때 axios 를 사용하면 좋은 점을 설명해 주세요.</p>
+    
+
+    <p>실제로 미니 프로젝트를 해보면서 느꼈던 axios 의 장점을 정리해본다.</p>
+<h2>자동 json 파싱</h2>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token keyword">import</span> axios <span class="token keyword">from</span> <span class="token string">'axios'</span>
+
+<span class="token keyword">export</span> <span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">fetchUser</span><span class="token punctuation">(</span><span class="token parameter">id</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> response <span class="token operator">=</span> <span class="token keyword">await</span> axios<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">https://api.example.com/users/</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>id<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> response<span class="token punctuation">.</span>data
+<span class="token punctuation">}</span>
+
+</code></pre>
+<p>response.data 는 자동으로 json 객체로 만들어져서 반환된다.</p>
+<p>response.json 을 한번 더 하냐 마냐의 차이 정도지만, 사람의 실수는 언제라도 발생할 수 있기 때문에 이 사소한 자동화가 엄청 도움이 된다.</p>
+<p>그리고 그만큼 수도 없이 json 파싱을 하기 때문에 아예 내장해둔 것 아닐까.</p>
+<h2>요청/응답 내장</h2>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token keyword">import</span> axios <span class="token keyword">from</span> <span class="token string">'axios'</span>
+
+<span class="token keyword">export</span> <span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">login</span><span class="token punctuation">(</span><span class="token parameter">username<span class="token punctuation">,</span> password</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> res <span class="token operator">=</span> <span class="token keyword">await</span> axios<span class="token punctuation">.</span><span class="token function">post</span><span class="token punctuation">(</span><span class="token string">'https://api.example.com/login'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    username<span class="token punctuation">,</span>
+    password
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> res<span class="token punctuation">.</span>data
+<span class="token punctuation">}</span>
+
+</code></pre>
+<p>이것도 사소하다면 사소한 부분인데, 원래는 method, headers, body 등을 직접 기입해야 한다.</p>
+<p>axios 에는 별도의 추가 사항이 아니면 각종 요청 하기 위한 기본 값이 들어가 있다. 우리가 필요에 따라 수정하거나 추가만 해주면 된다.</p>
+<h2>상태 코드 catch()</h2>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token keyword">try</span> <span class="token punctuation">{</span>
+  <span class="token keyword">await</span> axios<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'/bad-url'</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>error<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>error<span class="token punctuation">.</span>response<span class="token punctuation">.</span>status<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+</code></pre>
+<p>기존 fetch 에서는 요청과 응답 중에 통신이 실패할 경우에만 error 가 발생한다.</p>
+<p>그러나 axios 에서는 status code 에 따라서도 추가로 error 로 출력한다.</p>
+<p>어차피 개발하면 status code 400 처럼 치명적인 오류는 개발자가 따로 error 처리를 하기 때문에, 이 소소한 기능은 정말 도움이 된다.</p>
+<p>우리가 만들 api 가 몇 개면 괜찮지만, 몇 십개라면 매번 이런 예외 처리를 추가해줘야 하기 때문이다.</p>
+<h2>query 자동 변환</h2>
+<pre class="language-javascript"><code class="language-javascript">
+axios<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'https://api.example.com/search'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">params</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">q</span><span class="token operator">:</span> <span class="token string">'apple'</span><span class="token punctuation">,</span> <span class="token literal-property property">page</span><span class="token operator">:</span> <span class="token number">2</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+</code></pre>
+<blockquote>
+<p>https://api.example.com/search?q=apple&amp;page=2</p>
+</blockquote>
+<p>이 query 자동 변환도 엄청 편리한 기능이다.</p>
+<p>물론, javascript 에 있는 join 기능을 이용해서 구현할 수 있지만 귀찮은 건 사실이다.</p>
+<h2>마무리</h2>
+<p>물론, 그밖에도 axios 를 사용했을 때 얻는 편리함은 많다.</p>
+<p>그러나 아직 내가 그 편리한 기능을 쓸만큼의 프로젝트를 해보지 않아서 체감되지는 않는다.</p>
+<p>대표적으로는 인터셉터 라는 기능이 있다.</p>
+<h3>인터셉터</h3>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token keyword">import</span> axios <span class="token keyword">from</span> <span class="token string">'axios'</span>
+
+<span class="token comment">// 요청 인터셉터</span>
+axios<span class="token punctuation">.</span>interceptors<span class="token punctuation">.</span>request<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">config</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> token <span class="token operator">=</span> localStorage<span class="token punctuation">.</span><span class="token function">getItem</span><span class="token punctuation">(</span><span class="token string">'token'</span><span class="token punctuation">)</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>token<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    config<span class="token punctuation">.</span>headers<span class="token punctuation">.</span>Authorization <span class="token operator">=</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Bearer </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>token<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
+  <span class="token punctuation">}</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'[요청 전]'</span><span class="token punctuation">,</span> config<span class="token punctuation">)</span>
+  <span class="token keyword">return</span> config
+<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">error</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> Promise<span class="token punctuation">.</span><span class="token function">reject</span><span class="token punctuation">(</span>error<span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+<span class="token comment">// 응답 인터셉터</span>
+axios<span class="token punctuation">.</span>interceptors<span class="token punctuation">.</span>response<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">response</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'[응답 수신]'</span><span class="token punctuation">,</span> response<span class="token punctuation">)</span>
+  <span class="token keyword">return</span> response
+<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">error</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>error<span class="token punctuation">.</span>response<span class="token operator">?.</span>status <span class="token operator">===</span> <span class="token number">401</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">alert</span><span class="token punctuation">(</span><span class="token string">'로그인이 필요합니다.'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> Promise<span class="token punctuation">.</span><span class="token function">reject</span><span class="token punctuation">(</span>error<span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+</code></pre>
+<p>이 인터셉터라는 기능은 말 그대로 중간에 <strong>요청을 가로채서 처리하는</strong> 하는 기능이라고 한다.</p>
+<p>흔히 사용되는 경우는 웹 서비스에서 로그인을 반드시 해야 할 수 있는 기능을 쓸 때 라고 한다.</p>
+<p>그 기능을 쓰기 전에 로그인이 되어 있지 않다면, 그전에 미리 로그인을 하라고 요청을 막아버리는 것이다.</p>
+<p>다음 프로젝트에서는 이 기능을 써볼만한 걸 고려해봐야겠다.</p>
+
+  </article>
+
+  </main>
+  <footer>
+  <p>&copy; gyunam park</p>
+</footer>
+</body>
+</html>
