@@ -46,6 +46,11 @@ export default function (eleventyConfig) {
     });
   });
 
+  eleventyConfig.addCollection("tag_hex", (collectionApi) => {
+    return collectionApi.getFilteredByTag("hex").sort((a, b) => {
+      return b.date - a.date;
+    });
+  });
 
   // 날짜 포맷 필터 추가
   eleventyConfig.addFilter("date", (dateObj) => {
