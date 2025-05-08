@@ -46,7 +46,6 @@ export default function (eleventyConfig) {
     });
   });
 
-
   // 날짜 포맷 필터 추가
   eleventyConfig.addFilter("date", (dateObj) => {
     if (!(dateObj instanceof Date)) {
