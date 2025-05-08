@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="a tiny blog by gyunam park.">
+  <meta name="author" content="Gyunam Park">
+  <!-- OPEN GRAPH -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="gyunam.blog">
+  <!-- 파비콘(favicon) -->
+  <link rel="icon" href="/resources/favicon/favicon.ico" type="image/x-icon">
+  <!-- canonical URL -->
+  <link rel="canonical" href="https://www.gyunam.blog/">
+  
+  <link rel="stylesheet" href="/styles.css">
+  <title>gyunam.blog</title>
+</head>
+<body>
+  <header>
+  <div class="header-container">
+    <a class="header-title" href="/">gyunam.blog</a>
+    <nav class="header-nav">
+      <ul class="header-tag-list">
+        <li class="header-tag-list-item">
+          <a href="/tags/11ty/">11ty (1)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/express/">express (6)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/weekly/">weekly (6)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/sprinter/">sprinter (1)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/toy/">toy (1)</a>
+        </li>
+      </ul>
+      <ul class="header-tag-list">
+        
+      </ul>
+    </nav>
+  </div>
+</header>
+  <main>
+    
+  <article>
+    <h1>[express] 복습(1주차)</h1>
+
+    
+      <p class="subtitle">express / axios 를 사용한 간단 api 서버</p>
+    
+
+    <p><strong>api test</strong> <a href="https://instasciigram.onrender.com/">https://instasciigram.onrender.com/</a></p>
+<p><strong>git</strong> <a href="https://github.com/gyunam-bark/instasciigram">https://github.com/gyunam-bark/instasciigram</a></p>
+<h2>재미로 시작한 게 또 커졌네</h2>
+<p>스프린트 미션 1을 진행하고 나니 시간이 좀 남았다. 이 남은 시간을 어떻게 보낼까 고민하는데, 문득 미션1은 요청하고 응답을 듣는 코드라는 걸 깨달았다.</p>
+<p>그래서 이번엔 요청 받아서 응답하는 걸 만들어보자는 생각이 들었다.</p>
+<p>요청하는 것만큼 간단할 줄 알았는데, 전혀 간단하지 않았다..</p>
+<h2>학습한 내용</h2>
+<p>이번에는 워낙 많은 것들을 삽질해서 분류별로 정리한다.</p>
+<h3>javascript</h3>
+<h4>객체 분해</h4>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token keyword">const</span> <span class="token punctuation">{</span> id <span class="token punctuation">}</span> <span class="token operator">=</span> req<span class="token punctuation">.</span>params
+<span class="token keyword">const</span> <span class="token punctuation">{</span> password <span class="token operator">=</span> <span class="token string">''</span><span class="token punctuation">,</span> <span class="token operator">...</span>fields <span class="token punctuation">}</span> <span class="token operator">=</span> req<span class="token punctuation">.</span>body
+
+<span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token keyword">await</span> PostRoutes<span class="token punctuation">.</span><span class="token function">updatePost</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token operator">...</span>fields<span class="token punctuation">,</span>
+  <span class="token literal-property property">id</span><span class="token operator">:</span> <span class="token function">Number</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">password</span><span class="token operator">:</span> password
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+</code></pre>
+<p>patch 기능을 만들 때 썼다.</p>
+<p>id 는 파라미터에서 받아와서 구분이 편했는데, password 는 어떻게 가져올까 고민하다가 저렇게 해봤더니 되었다.</p>
+<p>아니 이게 되네!ㅋㅋ 라는 생각과 동시에, 이게 되네..? 라는 생각도 들었다.</p>
+<p>분명 배웠던 기능인데, 이렇게 써먹으니 또 새롭다.</p>
+<h4>try catch(e) 에 있을 땐 throw 만 해도 된다.</h4>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token keyword">try</span> <span class="token punctuation">{</span>
+
+<span class="token punctuation">}</span> <span class="token keyword">catch</span><span class="token punctuation">(</span>error<span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token keyword">throw</span> error
+<span class="token punctuation">}</span>
+</code></pre>
+<p>매번 <strong>throw new Error(error.message)</strong> 를 하던 중 어느날 깨달아버렸다.</p>
+<p>애초에 이 error 는 Error() 객체인데, 나는 왜 다시 message 를 굳이 빼서 반환하는걸까.</p>
+<p>물론, 필요에 따라 error.message 를 꺼내서 다시 랩핑하기도 하지만, 보통의 경우엔 그냥 throw error 해도 잘 동작했다.</p>
+<h4>문자열 길이 확인은 string.trim().length()</h4>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token keyword">const</span> length <span class="token operator">=</span> string<span class="token punctuation">.</span><span class="token function">trim</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>length <span class="token operator">===</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment">/* 비었다! */</span> <span class="token punctuation">}</span>
+
+</code></pre>
+<p>string.length() 로도 사실 문자열 길이 확인에는 문제가 없다. 다만, ' ' 처럼 공백이 와도 문자열 길이가 있다고 판단한다.</p>
+<p>사실, ' ' 공백도 ascii 문자 안에 있으니까 문자는 맞는데.. api 서버로 만드니까 사용자가 앞 뒤에 공백이 있는지 모르고 보낼 수 있는 가능성이 있었다.</p>
+<p>password 같은 예민한 문자열은 물론이고, 단순한 tag 같은 문자열도 앞뒤에 가능한 공백이 있으면 안된다.</p>
+<p>물론, 클라이언트에서도 해당 부분을 검증하겠지만, 일단 서버에서도 예외처리를 했다.</p>
+<p>string.trim().length() 로 하면 trim() 이 앞 뒤 빈 공백을 없앤 후 문자열 길이를 받을 수 있다.</p>
+<h4>isNaN()</h4>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token keyword">const</span> parsed <span class="token operator">=</span> Date<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>date<span class="token punctuation">)</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isNaN</span><span class="token punctuation">(</span>parsed<span class="token punctuation">)</span> <span class="token operator">===</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">숫자가 아녀</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+</code></pre>
+<p>isNaN(is not a number) 은 매번 까막까막 한다.</p>
+<p>이번엔 서버에서 date 값을 주고 받으며 파라미터 검증할 때 사용했다.</p>
+<h4>toJSON()</h4>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token function">toJSON</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">id</span><span class="token operator">:</span><span class="token keyword">this</span><span class="token punctuation">.</span>#id
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+</code></pre>
+<p>이때까지 toJson() 으로 항상 만들다가, 우연히 github 에서 다른 사람들이 toJSON() 으로 적은 걸 보았다. 그냥 단순히 JSON 이 약어라서 대문자로 적는, 개인 함수 네이밍 차이라고 생각했는데..</p>
+<p>기본적으로 JSON.stringfy가 호출되면 자동으로 toJSON() 이 호출되도록 되어있다고 한다.</p>
+<p>앞으로는 toJSON() 으로 꼭 하자...</p>
+<h4>toLowerCase()</h4>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token keyword">const</span> loweredKeyword <span class="token operator">=</span> keyword<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+title<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span>loweredKeyword<span class="token punctuation">)</span>
+
+</code></pre>
+<p>검색 정확도(?)를 높이는 방법이랄까.</p>
+<p>keyword 와 검색 대상을 모두 소문자 혹은 대문자로 바꾸면 검색될 확률이 높아진다.</p>
+<p>왜냐면 대소문자를 구분했더니, 사람마다 ASCII, ascii, Ascii 등등 여러 방법으로 쓸 가능성이 높다는 것을 깨달았기 때문이다. 실제로 내가 api 서버를 테스트 하는 동안 저렇게 적어두고 한참을 왜 검색이 안 되지 고민했었다..</p>
+<h3>express</h3>
+<h4>status 반환</h4>
+<pre class="language-javascript"><code class="language-javascript">
+res<span class="token punctuation">.</span><span class="token function">status</span><span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">html code here</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+res<span class="token punctuation">.</span><span class="token function">status</span><span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">json</span><span class="token punctuation">(</span>json<span class="token punctuation">)</span>
+
+</code></pre>
+<p>멘토링 시간에 다른 팀원이 멘토님에게 물어본 것을 어부지리로 배워서 적용했다.</p>
+<p>모든 에러 코드를 반환하지는 않고, 현재 api 서버에서 나타나는 에러만 적용했다.</p>
+<p><strong>200</strong> : 성공</p>
+<p><strong>401</strong> : password 오류</p>
+<p><strong>404</strong> : post 없음</p>
+<h4>dotenv</h4>
+<pre class="language-text"><code class="language-text">
+// .env
+PORT=3000
+
+</code></pre>
+<p>따로 밖에 환경변수를 작성해둘 수 있다.</p>
+<p>이렇게 해두면 나중에 배포할 때 편하다! 그리고 필수다!</p>
+<p>왜냐면 코드 안에 데이터베이스 관련 계정과 비밀번호를 넣고 깃허브에 올릴 수는 없으니까..</p>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token comment">// server.mjs</span>
+<span class="token keyword">import</span> dotenv <span class="token keyword">from</span> <span class="token string">'dotenv'</span>
+dotenv<span class="token punctuation">.</span><span class="token function">config</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">class</span> <span class="token class-name">Server</span> <span class="token punctuation">{</span>
+  <span class="token keyword">static</span> #<span class="token constant">DEFAULT_PORT</span> <span class="token operator">=</span> process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">PORT</span>
+<span class="token punctuation">}</span>
+
+</code></pre>
+<p>javascript 에서는 dotenv 패키지를 받아서 위에와 같이 받아와서 사용한다.</p>
+<p>postgres 를 사용할 때도 저걸 사용하기 때문에 꼭 설정해줘야 한다.</p>
+<h4>path</h4>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token keyword">import</span> path <span class="token keyword">from</span> <span class="token string">'path'</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> fileURLToPath <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'url'</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> dirname <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'path'</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">class</span> <span class="token class-name">Server</span> <span class="token punctuation">{</span>
+  <span class="token keyword">static</span> #__FILENAME <span class="token operator">=</span> <span class="token function">fileURLToPath</span><span class="token punctuation">(</span><span class="token keyword">import</span><span class="token punctuation">.</span>meta<span class="token punctuation">.</span>url<span class="token punctuation">)</span>
+  <span class="token keyword">static</span> #__DIRNAME <span class="token operator">=</span> <span class="token function">dirname</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>#__FILENAME<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+</code></pre>
+<p>path 는 이번에 api 문서를 배포하려고 하니까 필요해서 학습했다. express 의 기능이라기 보다는 node.js 의 기본 기능이다.</p>
+<p>이렇게 받아온 path 는 아래와 같이 사용할 수 있다.</p>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token keyword">this</span><span class="token punctuation">.</span>#server<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span>express<span class="token punctuation">.</span><span class="token function">static</span><span class="token punctuation">(</span>path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>#__DIRNAME<span class="token punctuation">,</span> <span class="token string">'./views'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+res<span class="token punctuation">.</span><span class="token function">sendFile</span><span class="token punctuation">(</span>path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>#__DIRNAME<span class="token punctuation">,</span> <span class="token string">'./views/document.html'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+</code></pre>
+<p>path.resolve() 를 반드시 해줘야하는데, resolve 뜻 그대로 해당 경로를 풀어서 <strong>절대 경로</strong> 로 만들어준다.</p>
+<p>이 함수가 없었으면 내 프로젝트 기준 /home/user/gu/workspaces/github/instasciigram/server/views/document.html 을 내가 직접 입력해야 했을 것이다.</p>
+<p>심지어 배포하면 저 경로는 또 바뀌기 때문에 새로 작성해야하는 걸 생각하면 골 아파진다.</p>
+<h4>middleware</h4>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token keyword">this</span><span class="token punctuation">.</span>#server<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span>express<span class="token punctuation">.</span><span class="token function">json</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+</code></pre>
+<p>api 서버를 배포하고 나니, 미들웨어를 사용하면 더 간단하다는 피드백을 받았었다.</p>
+<p>미들웨어가 뭐지? 하고 찾아보니, 이미 내가 json 으로 통신하기 위해서 추가했던 express.json() 이 미들웨어라고 한다.</p>
+<p>비슷하게 서버 로그를 남겨주는 것은 물론, 파라미터나 쿼리가 정상적인 값으로 들어왔는지 체크해주는 것도 미들웨어로 이미 다 있다고 한다!</p>
+<p>역시, 모든 서버에서 쓸만한 기능은 누군가가 다 오픈소스로 만들었구만!</p>
+<p>다음 프로젝트는 이 미들웨어를 사용해보는 걸 목표로 해봐야겠다.</p>
+<h3>postgres</h3>
+<h4>설치</h4>
+<blockquote>
+<p>brew install postgresql</p>
+</blockquote>
+<p>나는 맥북을 쓰고 있기 때문에 이 명령어 하나로 끝났다.</p>
+<h4>유저, 데이터베이스, 권한</h4>
+<p>실행하는 것부터 삽질했다.</p>
+<p>먼저, psql -l 을 실행해서 어떤 유저에 어떤 데이터베이스가 있는지 본다.</p>
+<p>나의 경우 postgresql 의 기본 유저가 내 사용자 이름(gu) 로 되어 있었다.</p>
+<pre class="language-text"><code class="language-text">
+psql -U gu -d postgres  
+
+</code></pre>
+<h4>새로운 유저, 새로운 데이터베이스, 모든 권한 부여</h4>
+<pre class="language-text"><code class="language-text">
+CREATE USER gyunam WITH PASSWORD '0000';
+CREATE DATABASE instasciigram OWNER gyunam;
+GRANT ALL PRIVILEGES ON DATABASE instasciigram TO gyunam;
+
+</code></pre>
+<p>당연히 비밀번호는 다르다. 그냥 표-준 느낌으로 0000 4개를 했을 뿐.</p>
+<p>순서대로 하면 어렵지 않다.</p>
+<ol>
+<li>유저 생성</li>
+<li>새로운 데이터베이스 생성 + 주인 유저</li>
+<li>이 데이터베이스 권한을 주인 유저에게</li>
+</ol>
+<p>여기까지는 어렵지 않아서 할 만한데? 라고 생각했다..</p>
+<h4>npm i --save pg</h4>
+<p>node.js 패키지를 받아서 사용하면 편하다.</p>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token keyword">const</span> <span class="token punctuation">{</span> Pool <span class="token punctuation">}</span> <span class="token operator">=</span> pg
+
+</code></pre>
+<p>pg 에서 Pool 객체를 사용하는데, 말그대로 나의 데이터들이 쌓여있는(?) pool 이다. 일반 객체처럼 new Pool 로 해서 사용할 수 있다.</p>
+<h4>.env 추가</h4>
+<p>처음엔 그냥 빨리 써보려고 코드 안에다가 데이터베이스 정도를 넣었다가, 차후에 배포를 위해서 .env 로 빼냈다.</p>
+<pre class="language-text"><code class="language-text">
+//.env
+DB_HOST=
+DB_PORT=
+DB_USER=
+DB_PASSWORD=
+DB_NAME=
+
+</code></pre>
+<p>이런 식으로 각각 필요한 정보를 만들어 두고..</p>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token keyword">this</span><span class="token punctuation">.</span>#pool <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Pool</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+        <span class="token literal-property property">host</span><span class="token operator">:</span> process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">DB_HOST</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">port</span><span class="token operator">:</span> <span class="token function">Number</span><span class="token punctuation">(</span>process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">DB_PORT</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">database</span><span class="token operator">:</span> process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">DB_NAME</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">user</span><span class="token operator">:</span> process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">DB_USER</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">password</span><span class="token operator">:</span> process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">DB_PASSWORD</span><span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+</code></pre>
+<p>요런 식으로 javascript 에서 가져와서 쓸 수 있다.</p>
+<p>DB_PORT 는 문자열이 아닌 숫자로 쓰기 때문에 Number() 로 형 변환해준 것은 덤.</p>
+<h4>테이블 만들기</h4>
+<p>그 다음으로는 사용할 테이블을 만들었다.</p>
+<pre class="language-text"><code class="language-text">
+CREATE TABLE IF NOT EXISTS posts (
+          id SERIAL PRIMARY KEY,
+          title TEXT NOT NULL,
+          writer TEXT NOT NULL,
+          password TEXT NOT NULL,
+          tags TEXT[] DEFAULT '{}',
+          size INTEGER NOT NULL,
+          pixels TEXT[] DEFAULT '{}',
+          created_at TIMESTAMP NOT NULL,
+          updated_at TIMESTAMP NOT NULL
+        )
+
+</code></pre>
+<p>복잡해 보이지만 예제 하나 보고 하나 만들고 하는 식으로 하니까 크게 어렵진 않았다.</p>
+<p><strong>CREATE TABLE IF NOT EXISTS</strong> 가 중요한데, post 테이블이 없으면 만든다. 즉, 중간에 내가 테이블 내부 형태를 바꿔도, 기존 테이블을 지우기 전까지는 적용되지 않는다.</p>
+<p>마이그레이션을 하던가, 테이블을 지우던가 둘 중 하나를 해야하는데, 나는 그냥 테이블을 지웠다.</p>
+<pre class="language-text"><code class="language-text">
+DROP TABLE IF EXISTS posts;
+
+</code></pre>
+<p>어차피 테스트로 만들었던 post 뿐이라 지웠는데, 실제 서비스에서는 지울 수 없으니까 무조건 마이그레이션을 하던가 해야한다.</p>
+<p>가능한 이 테이블 자체를 수정하는 경우는 없는 게 최선일테지만, 사람 일은 어떻게 될 지 모르니까..</p>
+<p>처음엔 뭣 모르고 id 를 integer 로 했다가 낭패를 봤다. 자동으로 증가하려면 serial 로 해야한다고 한다.</p>
+<p>TEXT[] DEFAULT '{}' 은 문자열이 여러 개 담긴 배열인데 기본 값이 빈 배열로 지정된다는 뜻이다.</p>
+<h4>GET 쿼리</h4>
+<p>전체 목록을 받아오는 쿼리는 크게 어렵지는 않았다.</p>
+<p>그렇다고 쉬웠던 건 아니고..</p>
+<pre class="language-text"><code class="language-text">
+SELECT * FROM posts
+ORDER BY created_at DESC
+LIMIT $1 OFFSET $2
+
+</code></pre>
+<p>처음에 관련 예제들을 보는데 $1이랑 $2가 대체 어디서 오는지 몰라서 헤맸다.</p>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token keyword">await</span> <span class="token keyword">this</span><span class="token punctuation">.</span>pool<span class="token punctuation">.</span><span class="token function">query</span><span class="token punctuation">(</span>query<span class="token punctuation">,</span> values<span class="token punctuation">)</span>
+
+</code></pre>
+<p>알고보니 쿼리를 보낼 때 values[] 에 보내는 인자 순서라고 한다.</p>
+<p>javascript 에 익숙해져있어서 왜 <code>${keyword}</code> 처럼 안 가져가나 생각했었는데. 그러고보니 $ 쓰는 건 같구나!</p>
+<p>필터링 쿼리는 chatGPT 도움을 많이 받았다.</p>
+<pre class="language-text"><code class="language-text">
+SELECT * FROM posts
+WHERE
+  LOWER(title) LIKE $1
+  OR LOWER(writer) LIKE $1
+  OR EXISTS (
+    SELECT 1 FROM unnest(tags) tag WHERE LOWER(tag) LIKE $1
+  )
+ORDER BY created_at DESC
+LIMIT $2 OFFSET $3;
+
+</code></pre>
+<p>필터링은 동작하는 것을 보는 데 만족했다.</p>
+<p>한줄 한줄 보면 해석은 되는데, 다시 직접 짜라면 아직은 힘들다.</p>
+<p>특히 unnest 같이 배열을 펼치는 기능 같은 건 바로바로 안 떠오른다..</p>
+<p>프로젝트 몇 번 하다보면 스스로 필요한 조건으로 하게 되겠지..!</p>
+<h4>DELETE 쿼리</h4>
+<pre class="language-text"><code class="language-text">
+DELETE FROM posts WHERE id = $1
+
+</code></pre>
+<p>그냥 id 만 찾아도 되서 간단했다..</p>
+<p>나중에 블로그에 리뷰하는 동안 깨달은 건데, 간단하면 안 되었던 쿼리였다.</p>
+<p>password 어쨌냐고!</p>
+<p>지금에서야 수정하자면..</p>
+<pre class="language-text"><code class="language-text">
+DELETE FROM posts WHERE id = $1 AND password = $2
+
+</code></pre>
+<p>가 되었어야 했다..</p>
+<p>사실 동작 자체는 잘 하고는 있다. 왜냐면 쿼리를 보내기전에 내가 javascript 로 password 가 다르면 에러를 반환하게 짜두긴 했더라..</p>
+<p>근데 쿼리에서 체크하는게 맞겠지..</p>
+<h4>POST 쿼리</h4>
+<pre class="language-text"><code class="language-text">
+INSERT INTO posts (title, writer, password, tags, size, pixels, created_at, updated_at)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+RETURNING *
+
+</code></pre>
+<p>간단한데 RETURNING * 가 새롭다.</p>
+<p>별 건 아니고, 스프린트 미션 1에서 제공되었던 api 가 post 가 성공하면, 해당 객체를 반환하길레 따라해봤다.</p>
+<h4>PATCH 쿼리</h4>
+<p>patch 쿼리는 post 랑 비슷한데, 조금 다르다.</p>
+<pre class="language-text"><code class="language-text">
+UPDATE posts SET title = $1, writer = $2, tags = $3, size = $4, pixels = $5, updated_at = $6
+WHERE id = $7 
+RETURNING *
+
+</code></pre>
+<p>기존의 데이터를 찾아서 수정하기 때문에 따로 VALUES 를 사용하지 않는다.</p>
+<h3>render</h3>
+<p>한 가지만 기억하자.</p>
+<h4>DB_HOST엔 Hostname 넣으면 됨</h4>
+<p>이거 안 되서 무려 30분이나 해매었다.</p>
+<p>inner link 를 그대로 복사 붙여넣기 했더니 배포에서 계속 실패가 뜨는게 아닌가..</p>
+<p>한참을 이리저리 시도하다가, 그냥 Hostname 을 넣었더니 배포 성공했다..!</p>
+<h2>마무리</h2>
+<p>매번 학습용 프로젝트를 할 때마다 배우는 건 많은데, 몸이 고달프다..!</p>
+<p>이번 황금연휴 내내 프로젝트만 잡고 있었던 것 같다.. 하루 정도는 쉴 껄..</p>
+<p>다음 학습 프로젝트는 미들웨어도 좀 붙여보고 해서 편의성도 가져가면서 실제로 사람들이 쓸만한 백엔드를 만들어봐야겠다.</p>
+
+  </article>
+
+  </main>
+  <footer>
+  <p>&copy; gyunam park</p>
+</footer>
+</body>
+</html>
