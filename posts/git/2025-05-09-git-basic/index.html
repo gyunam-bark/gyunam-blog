@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="a tiny blog by gyunam park.">
+  <meta name="author" content="Gyunam Park">
+  <!-- OPEN GRAPH -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="gyunam.blog">
+  <!-- 파비콘(favicon) -->
+  <link rel="icon" href="/resources/favicon/favicon.ico" type="image/x-icon">
+  <!-- canonical URL -->
+  <link rel="canonical" href="https://www.gyunam.blog/">
+  
+  <link rel="stylesheet" href="/styles.css">
+  <title>gyunam.blog</title>
+</head>
+<body>
+  <header>
+  <div class="header-container">
+    <a class="header-title" href="/">gyunam.blog</a>
+    <nav class="header-nav">
+      <ul class="header-tag-list">
+        <li class="header-tag-list-item">
+          <a href="/tags/11ty/">11ty (1)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/express/">express (6)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/weekly/">weekly (6)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/sprinter/">sprinter (1)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/toy/">toy (1)</a>
+        </li>
+      </ul>
+      <ul class="header-tag-list">
+        <li class="header-tag-list-item">
+          <a href="/tags/git/">git (2)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/shell/">shell (0)</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+  <main>
+    
+  <article>
+    <h1>[git] 기초 명령어</h1>
+
+    
+      <p class="subtitle">git 기초 명령어</p>
+    
+
+    <h2>repository 복제</h2>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">git</span> clone <span class="token punctuation">{</span>url<span class="token punctuation">}</span>
+
+</code></pre>
+<h2>status 확인</h2>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">git</span> status
+
+</code></pre>
+<h2>받아오기</h2>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">git</span> pull
+
+</code></pre>
+<h2>branch 생성</h2>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">git</span> branch <span class="token punctuation">{</span>to<span class="token punctuation">}</span> <span class="token punctuation">{</span>from<span class="token punctuation">}</span>
+
+</code></pre>
+<h3>example</h3>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">git</span> branch dev main
+
+</code></pre>
+<h2>파일 추가</h2>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">git</span> <span class="token function">add</span> <span class="token punctuation">{</span>file or directory<span class="token punctuation">}</span>
+
+</code></pre>
+<h3>example</h3>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">git</span> <span class="token function">add</span> .<span class="token punctuation">(</span>all<span class="token punctuation">)</span>
+
+</code></pre>
+<h2>commit</h2>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">git</span> commit <span class="token parameter variable">-m</span> <span class="token string">"message"</span>
+
+</code></pre>
+<h2>push</h2>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">git</span> push origin dev
+
+</code></pre>
+
+  </article>
+
+  </main>
+  <footer>
+  <p>&copy; gyunam park</p>
+</footer>
+</body>
+</html>

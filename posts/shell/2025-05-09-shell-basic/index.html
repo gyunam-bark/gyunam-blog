@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="a tiny blog by gyunam park.">
+  <meta name="author" content="Gyunam Park">
+  <!-- OPEN GRAPH -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="gyunam.blog">
+  <!-- 파비콘(favicon) -->
+  <link rel="icon" href="/resources/favicon/favicon.ico" type="image/x-icon">
+  <!-- canonical URL -->
+  <link rel="canonical" href="https://www.gyunam.blog/">
+  
+  <link rel="stylesheet" href="/styles.css">
+  <title>gyunam.blog</title>
+</head>
+<body>
+  <header>
+  <div class="header-container">
+    <a class="header-title" href="/">gyunam.blog</a>
+    <nav class="header-nav">
+      <ul class="header-tag-list">
+        <li class="header-tag-list-item">
+          <a href="/tags/11ty/">11ty (1)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/express/">express (6)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/weekly/">weekly (6)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/sprinter/">sprinter (1)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/toy/">toy (1)</a>
+        </li>
+      </ul>
+      <ul class="header-tag-list">
+        <li class="header-tag-list-item">
+          <a href="/tags/git/">git (2)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/shell/">shell (0)</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+  <main>
+    
+  <article>
+    <h1>[shell] 기초 명령어</h1>
+
+    
+      <p class="subtitle">shell 기초 명령어</p>
+    
+
+    <h2>pwd</h2>
+<p><strong>p</strong>rint <strong>w</strong>orking <strong>d</strong>irectory 의 약자로, 현재 작업 중인 디렉터리를 출력한다.</p>
+<pre class="language-shell"><code class="language-shell">
+<span class="token builtin class-name">pwd</span>
+
+</code></pre>
+<h2>ls</h2>
+<p><strong>l</strong>i<strong>s</strong>t 의 약자로, 현재 또는 특정 디렉토리 내에 있는 디렉토리/파일 정보를 보여준다.</p>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">ls</span> <span class="token punctuation">[</span>options<span class="token punctuation">]</span> <span class="token punctuation">[</span>path<span class="token punctuation">]</span>
+
+</code></pre>
+<h3>options</h3>
+<h4>a</h4>
+<p><strong>a</strong>ll 의 약자로, 모든 파일을 보여준다.</p>
+<h4>l</h4>
+<p><strong>l</strong>ong 의 약자로, 더 길게 정보를 표시한다. 숨겨진 파일들도 보여주기 때문에 al 셋트로 많이 사용한다.</p>
+<h3>example</h3>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">ls</span> <span class="token parameter variable">-al</span>
+
+</code></pre>
+<h2>cd</h2>
+<pre class="language-shell"><code class="language-shell">
+<span class="token builtin class-name">cd</span> <span class="token punctuation">[</span>path<span class="token punctuation">]</span>
+
+</code></pre>
+<p><strong>c</strong>hange <strong>d</strong>irectory 의 약자로, 디렉토리를 이동한다.</p>
+<h3>example</h3>
+<pre class="language-shell"><code class="language-shell">
+<span class="token builtin class-name">cd</span> github/example
+
+</code></pre>
+<h2>mkdir</h2>
+<p><strong>m</strong>a<strong>k</strong>e <strong>dir</strong>ectory 의 약자로, 하나 이상의 디렉터리를 만든다.</p>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">mkdir</span> <span class="token punctuation">[</span>path<span class="token punctuation">]</span> <span class="token punctuation">[</span>path<span class="token punctuation">]</span> <span class="token punctuation">..</span>.
+
+</code></pre>
+<h3>example</h3>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">mkdir</span> example
+
+</code></pre>
+<h2>touch</h2>
+<p>원래는 파일 업데이트 날짜를 갱신하기 위해서 <strong>건드리는</strong> 용도로 만들어졌다.</p>
+<p>근데 에러를 방지하기 위해서 해당하는 파일이 없을 경우, 동일한 이름의 빈 파일을 만들었다. 이 기능을 역으로 개발자들이 빈 파일을 만드는데 사용하는 용도로 가끔 쓴다.</p>
+<p>보통은 그냥 아래 vim 으로 만들고 바로 파일 작성까지 하는 경우가 많다.</p>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">touch</span> <span class="token punctuation">[</span>file<span class="token punctuation">]</span>
+
+</code></pre>
+<h3>example</h3>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">touch</span> example.md
+
+</code></pre>
+<h2>vim</h2>
+<p><strong>v</strong>i <strong>im</strong>proved 의 약자로, 개선된 vi 라는 뜻을 가진 편집기 다.</p>
+<h2>cat</h2>
+<p>concatenate 의 약자로, 하나 이상의 파일을 <strong>연결</strong>해서 출력한다.</p>
+<p>원래는 이어서 보여주는 영도였지만, 지금은 그냥 파일 출력의 기능으로 많이 사용하고 있다.</p>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">cat</span> <span class="token punctuation">[</span>file<span class="token punctuation">]</span> <span class="token punctuation">[</span>file<span class="token punctuation">]</span> <span class="token punctuation">..</span>.
+
+</code></pre>
+<h3>example</h3>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">cat</span> example1.txt example2.txt
+
+</code></pre>
+<h2>tac</h2>
+<p>cat 을 거꾸로 뒤집은 명령어로, 진짜 내용을 끝에서부터 거꾸로 출력한다.</p>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">tac</span> <span class="token punctuation">[</span>file<span class="token punctuation">]</span> <span class="token punctuation">[</span>file<span class="token punctuation">]</span> <span class="token punctuation">..</span>.
+
+</code></pre>
+<h3>example</h3>
+<pre class="language-shell"><code class="language-shell">
+
+<span class="token function">tac</span> example1.txt exmaple2.txt
+
+</code></pre>
+<h2>head</h2>
+<p>파일의 처음 몇 줄을 출력하는 명령어다.</p>
+<p>별도로 지정하지 않으면, 기본적으로 10 줄을 반환한다.</p>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">head</span> <span class="token punctuation">[</span>-n<span class="token punctuation">]</span> <span class="token punctuation">[</span>file<span class="token punctuation">]</span>
+
+</code></pre>
+<h3>example</h3>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">head</span> <span class="token parameter variable">-n</span> <span class="token number">5</span> example.txt
+
+</code></pre>
+<h2>tail</h2>
+<p>head 와 반대로 파일의 마지막 몇 줄을 출력한다.</p>
+<p>마찬가지로 기본값은 10 줄 이다.</p>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">tail</span> <span class="token punctuation">[</span>-n<span class="token punctuation">]</span> <span class="token punctuation">[</span>file<span class="token punctuation">]</span>
+
+</code></pre>
+<h3>example</h3>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">tail</span> <span class="token parameter variable">-n</span> <span class="token number">5</span> example.txt
+
+</code></pre>
+<h2>more</h2>
+<p>긴 파일을 페이지 단위로 출력하는 원시적인 형태의 문서 뷰어다.</p>
+<p>제공되는 기능은 아래와 같다.</p>
+<ol>
+<li>스페이스 누르면 다음 페이지로 이동</li>
+<li>q 누르면 종료</li>
+</ol>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">more</span> <span class="token punctuation">[</span>file<span class="token punctuation">]</span>
+
+</code></pre>
+<h3>example</h3>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">more</span> example.txt
+
+</code></pre>
+<h2>less</h2>
+<p>less is more 에서 온 명령어로 more 보다 더 확장된 기능을 제공하는 뷰어다.</p>
+<p>추가된 기능으로는 아래와 같다.</p>
+<ol>
+<li>위 아래 자유 스크롤</li>
+<li>검색(/,?)</li>
+<li>빠른 이동(숫자+g, G)</li>
+</ol>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">less</span> <span class="token punctuation">[</span>file<span class="token punctuation">]</span>
+
+</code></pre>
+<h3>example</h3>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">less</span> example.txt
+
+</code></pre>
+<h2>mv</h2>
+<p><strong>m</strong>o<strong>v</strong>e 의 약자로 파일 또는 디렉토리를 이동할 때 사용한다.</p>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">mv</span> <span class="token punctuation">[</span>options<span class="token punctuation">]</span> <span class="token punctuation">[</span>file<span class="token punctuation">]</span> <span class="token punctuation">[</span>file<span class="token punctuation">]</span>
+
+</code></pre>
+<h3>options</h3>
+<h4>i</h4>
+<p>iteractive(상호작용)의 약자로, 영어 단어 interactive 에는 좀 더 신중하게 한다는 의미도 내포되어있다.</p>
+<p>만약 해당 디렉토리에 동일한 이름의 파일이 있을 경우에 덮어씌울 것인지 확인 한다.</p>
+<h4>f</h4>
+<p>force 의 약자로, 무조건 강제로 덮어씌운다.</p>
+<p>기본적으로 mv 는 무조건 덮어씌우지만, 디렉토리나 파일이 없을 때나 권한이 없을 때는 에러가 발생한다.</p>
+<p>-f 를 쓰면 이걸 죄다 무시하고 무조건 강제로 덮어씌울 수 있다.</p>
+<h3>example</h3>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">mv</span> example.md markdown/example.md
+
+</code></pre>
+<h2>cp</h2>
+<p>copy 의 약자로 파일 또는 디렉토리를 복사한다.</p>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">cp</span> <span class="token punctuation">[</span>options<span class="token punctuation">]</span> <span class="token punctuation">[</span>path<span class="token punctuation">]</span> <span class="token punctuation">[</span>path<span class="token punctuation">]</span>
+
+</code></pre>
+<h3>options</h3>
+<h4>i</h4>
+<p>interactive 의 약자. 마찬가지로 신중하게 하기 위해서 해당 디렉토리에 같은 파일이 있으면 사용자에게 다시 되 묻는다.</p>
+<h4>r</h4>
+<p>reculsive(재귀) 의 약자. 디렉토리의 경우엔 안에 여러 파일이 있을 수 있기 때문에 재귀적으로 동작하면서 안의 모든 파일에도 동작하도록 한다.</p>
+<h3>example</h3>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">cp</span> <span class="token parameter variable">-ri</span> example.md markdown/example.md
+
+</code></pre>
+<h2>rm</h2>
+<p>remove 의 약자로 파일 또는 디렉토리를 지운다.</p>
+<p>계속해서 path 를 넣으면 한번에 여러 파일, 디렉토리를 지울 수 있다.</p>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">rm</span> <span class="token punctuation">[</span>options<span class="token punctuation">]</span> <span class="token punctuation">[</span>path<span class="token punctuation">]</span> <span class="token punctuation">[</span>path<span class="token punctuation">]</span>
+
+</code></pre>
+<h3>options</h3>
+<p>cp 와 거의 동일하다.</p>
+<h4>i</h4>
+<p>interactive 의 약자. 마찬가지로 신중하게 하기 위해서 해당 디렉토리에 같은 파일이 있으면 사용자에게 다시 되 묻는다.</p>
+<h4>r</h4>
+<p>reculsive(재귀) 의 약자. 디렉토리의 경우엔 안에 여러 파일이 있을 수 있기 때문에 재귀적으로 동작하면서 안의 모든 파일에도 동작하도록 한다.</p>
+<h4>f</h4>
+<p>force 의 약자. 강제로 지운다. 권한이 없는 파일이나 디렉토리도 지우기 때문에 조심해야 한다.</p>
+<h3>example</h3>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">rm</span> <span class="token parameter variable">-rf</span> example.md example
+
+</code></pre>
+
+  </article>
+
+  </main>
+  <footer>
+  <p>&copy; gyunam park</p>
+</footer>
+</body>
+</html>
