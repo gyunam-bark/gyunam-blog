@@ -40,6 +40,18 @@ export default function (eleventyConfig) {
     });
   });
 
+  eleventyConfig.addCollection("tag_git", (collectionApi) => {
+    return collectionApi.getFilteredByTag("git").sort((a, b) => {
+      return b.date - a.date;
+    });
+  });
+
+  eleventyConfig.addCollection("tag_shell", (collectionApi) => {
+    return collectionApi.getFilteredByTag("shell").sort((a, b) => {
+      return b.date - a.date;
+    });
+  });
+
   eleventyConfig.addCollection("tag_toy", (collectionApi) => {
     return collectionApi.getFilteredByTag("toy").sort((a, b) => {
       return b.date - a.date;
