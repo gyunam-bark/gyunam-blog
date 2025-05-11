@@ -103,6 +103,40 @@
 <span class="token function">git</span> push origin dev
 
 </code></pre>
+<h2>log</h2>
+<p>커밋 히스토리를 보려고 할 때 쓰는 명령어.</p>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">git</span> log
+</code></pre>
+<p>히스토리에 있는 정보들이 복잡한 경우도 있기 때문에 여러가지 꾸밈 옵션들이 있다.</p>
+<h3>example</h3>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">git</span> log <span class="token parameter variable">--pretty</span><span class="token operator">=</span>oneline
+
+</code></pre>
+<h2>show</h2>
+<p>특정 커밋의 변경사항을 볼 때 사용하는 명령어.</p>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">git</span> show
+
+</code></pre>
+<h2>방금 커밋 고치기</h2>
+<p>amend 는 고치다, 수정하다라는 뜻을 가지고 있다.</p>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">git</span> commit <span class="token parameter variable">--amend</span>
+</code></pre>
+<h2>alias</h2>
+<p>git 명령어가 길어질 때 매번 길게 치는게 귀찮으니까 만들어진 별명(alias)을 지칭하는 aliasing(앨리어싱) 명령어.</p>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">git</span> config alias.history <span class="token string">'log --pretty-oneline'</span>
+
+</code></pre>
+<h2>diff</h2>
+<p>different 의 약자로, 두 커밋 사이의 차이점을 확인하는 명령어.</p>
+<pre class="language-shell"><code class="language-shell">
+<span class="token function">git</span> <span class="token function">diff</span> a b
+
+</code></pre>
 
   </article>
 
