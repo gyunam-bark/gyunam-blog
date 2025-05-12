@@ -2,7 +2,7 @@
 title: "[shell] 기초 명령어"
 subtitle: "shell 기초 명령어"
 tags:
-  - git
+  - shell
 layout: layouts/post.njk
 date: 2025-05-09
 ---
