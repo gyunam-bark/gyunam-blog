@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="a tiny blog by gyunam park.">
+  <meta name="author" content="Gyunam Park">
+  <!-- OPEN GRAPH -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="gyunam.blog">
+  <!-- 파비콘(favicon) -->
+  <link rel="icon" href="/resources/favicon/favicon.ico" type="image/x-icon">
+  <!-- canonical URL -->
+  <link rel="canonical" href="https://www.gyunam.blog/">
+  
+  <link rel="stylesheet" href="/styles.css">
+  <title>gyunam.blog</title>
+</head>
+<body>
+  <header>
+  <div class="header-container">
+    <a class="header-title" href="/">gyunam.blog</a>
+    <nav class="header-nav">
+      <ul class="header-tag-list">
+        <li class="header-tag-list-item">
+          <a href="/tags/11ty/">11ty (1)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/express/">express (6)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/weekly/">weekly (6)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/sprinter/">sprinter (2)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/toy/">toy (1)</a>
+        </li>
+      </ul>
+      <ul class="header-tag-list">
+        <li class="header-tag-list-item">
+          <a href="/tags/git/">git (1)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/shell/">shell (1)</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+  <main>
+    
+  <article>
+    <h1>[sprinter] 미션 2 삽질 기록</h1>
+
+    
+      <p class="subtitle">[NB] 웹개발 시작하기</p>
+    
+
+    <p>미션 2는 지난번에 작업한 미션 1을 git으로 pull request 까지 하는 것이 목적이다.</p>
+<h2>코드 올리기 전 진행한 코드 수정</h2>
+<h3>fromJSON, toJSON</h3>
+<pre class="language-javascript"><code class="language-javascript">
+<span class="token keyword">class</span> <span class="token class-name">Example</span> <span class="token punctuation">{</span>
+  <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span><span class="token punctuation">}</span>
+  
+  <span class="token keyword">static</span> <span class="token function">fromJSON</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Example</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token function">toJSON</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+
+</code></pre>
+<p>원래는 fromJson, toJson 으로 작성해서 사용하고 있었다.</p>
+<p>그런데 JSON.stirngfy 를 학습하고 나니까, 으잉, 이게 네이밍 취향이 아니었네?! 하고 호다닥 수정한 케이스.</p>
+<p>다시 생각해보면 JSON 자체가 약자니까 JSON 자체를 대문자로 쓰는 거구나 싶고.. 네이밍은 항상 어렵다.</p>
+<h3>클래스 이름 값 받기</h3>
+<pre class="language-javascript"><code class="language-javascript">
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">type[</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>createdProduct<span class="token punctuation">.</span>constructor<span class="token punctuation">.</span>name<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">]</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+
+</code></pre>
+<p>원래는 instanceof 로 특정 클래스일 때 문자열을 출력하는 코드를 쓰다가, 우연히 본 redit 코드에서 constructor.name 하면 된다는 엄청난 사실을 알게 되었다.</p>
+<h3>커밋 메세지 규칙</h3>
+<p>커밋 메세지 적는 게 정말 어렵다는 생각이 들었다.</p>
+<p>혼자서 코드 작성하는 동안에는 아무렇게나 작성해서 올렸는데, 이번엔 공유 레포지토리에 올리는 거니까 엄청 신경 쓰였다.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">타입</th>
+<th style="text-align:center">설명</th>
+<th style="text-align:center">예시</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">chore</td>
+<td style="text-align:center">잡일</td>
+<td style="text-align:center">chore: 패키지 업데이트</td>
+</tr>
+<tr>
+<td style="text-align:center">feat</td>
+<td style="text-align:center">새 기능 추가</td>
+<td style="text-align:center">feat: 사용자 로그인 기능 추가</td>
+</tr>
+<tr>
+<td style="text-align:center">fix</td>
+<td style="text-align:center">버그 수정</td>
+<td style="text-align:center">fix: 로그인 오류 수정</td>
+</tr>
+<tr>
+<td style="text-align:center">docs</td>
+<td style="text-align:center">문서 변경</td>
+<td style="text-align:center">docs: README 수정</td>
+</tr>
+<tr>
+<td style="text-align:center">style</td>
+<td style="text-align:center">코드 포맷, 세미콜론 수정 등</td>
+<td style="text-align:center">style: 코드 포맷 정리</td>
+</tr>
+<tr>
+<td style="text-align:center">refactor</td>
+<td style="text-align:center">코드 리팩토링</td>
+<td style="text-align:center">refactor: 로그인 로직 개선</td>
+</tr>
+<tr>
+<td style="text-align:center">perf</td>
+<td style="text-align:center">성능 개선</td>
+<td style="text-align:center">perf: 렌더링 속도 최적화</td>
+</tr>
+<tr>
+<td style="text-align:center">test</td>
+<td style="text-align:center">테스트 추가/수정</td>
+<td style="text-align:center">test: 로그인 테스트 케이스 추가</td>
+</tr>
+<tr>
+<td style="text-align:center">build</td>
+<td style="text-align:center">빌드 시스템 / 의존성 변경</td>
+<td style="text-align:center">build: webpack 설정 수정</td>
+</tr>
+<tr>
+<td style="text-align:center">ci</td>
+<td style="text-align:center">ci 설정 변경</td>
+<td style="text-align:center">ci: github actions 워크플로 수정</td>
+</tr>
+<tr>
+<td style="text-align:center">revert</td>
+<td style="text-align:center">커밋 되돌리기</td>
+<td style="text-align:center">revert: 로그인 기능 롤백</td>
+</tr>
+</tbody>
+</table>
+<p>찾아보니 이런 규칙이 있어서 가능한 지키려고 노력하고 있다.</p>
+<p>3주 뒤에 있을 팀 프로젝트 때 이 규칙을 프로젝트에 적용해서 아름다운(?) 커밋 메시지 풀을 만들어봐야겠다..!</p>
+<h3>PR 리퀘스트 작성</h3>
+<p>.github 에 있는 PULL_REQUEST_TEMPLATE.md 에 적으면 되는지 알고 한참 적었는데, PR 할 때 이거 입력하는 창이 따로 떴다.</p>
+<p>그렇다. 이름부터 TEMPLATE 인데 나는 여기다 작성하면 되는 지 알고 열심히 TEMPLATE를 수정했던 것이다.</p>
+<h2>마무리</h2>
+<p>이번엔 직전에 작성한 코드를 올리기만 하면 되는 거라 금방 끝났다.</p>
+
+  </article>
+
+  </main>
+  <footer>
+  <p>&copy; gyunam park</p>
+</footer>
+</body>
+</html>
