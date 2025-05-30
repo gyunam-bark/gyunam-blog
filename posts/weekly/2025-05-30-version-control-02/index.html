@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="a tiny blog by gyunam park.">
+  <meta name="author" content="Gyunam Park">
+  <!-- OPEN GRAPH -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="gyunam.blog">
+  <!-- 파비콘(favicon) -->
+  <link rel="icon" href="/resources/favicon/favicon.ico" type="image/x-icon">
+  <!-- canonical URL -->
+  <link rel="canonical" href="https://www.gyunam.blog/">
+  
+  <link rel="stylesheet" href="/styles.css">
+  <title>gyunam.blog</title>
+</head>
+<body>
+  <header>
+  <div class="header-container">
+    <a class="header-title" href="/">gyunam.blog</a>
+    <nav class="header-nav">
+      <ul class="header-tag-list">
+        <li class="header-tag-list-item">
+          <a href="/tags/11ty/">11ty (1)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/express/">express (6)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/weekly/">weekly (8)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/sprinter/">sprinter (2)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/toy/">toy (1)</a>
+        </li>
+      </ul>
+      <ul class="header-tag-list">
+        <li class="header-tag-list-item">
+          <a href="/tags/git/">git (1)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/shell/">shell (1)</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+  <main>
+    
+  <article>
+    <h1>[weekly] [nb] 버전 관리 및 협업하기(2)</h1>
+
+    
+      <p class="subtitle">toss 오픈 소스 프로젝트 중에서 하나를 골라 어떻게 git과 Github을 통해 협업이 이루어지는지 설명해 주세요.</p>
+    
+
+    <h2>es-hangul</h2>
+<p><strong>레포지토리 주소</strong> : <a href="https://github.com/toss/es-hangul">https://github.com/toss/es-hangul</a></p>
+<h3>선정 이유</h3>
+<p>다른 프로젝트는 개인 하나의 개발자가 issues 올리고 PR 까지 가는 경우가 많았다.</p>
+<p>그런데 es-hangul 은 사용자의 요청/제보 가 PR 까지 이루어지는 경우가 많아서 흐름을 파악하기가 좋았따.</p>
+<h3>issues</h3>
+<h4>목록</h4>
+<p>es-hangul 프로젝트가 특히 좋은 점은 issues 가 한글로 작성되어 있다.</p>
+<p>다른 프로젝트는 영어로 작성된 경우가 많은데, 역시 한글 라이브러리 프로젝트라서 그런가.</p>
+<p><img src="/resources/weekly/2025-05-30-version-control-02/1.png" alt="1"></p>
+<p>의외로 es-hangul 은 github에 올라간 issues는 그렇게 많지 않다.</p>
+<p>toss 내부적으로 사용되면서 어느정도 issues들이 처리된 라이브러리라서 그런 걸 수도 있고, 기존 베이스가 되는 <a href="https://github.com/e-/Hangul.js">Hnagul.js</a> 가 워낙 완성도가 높은 상태여서 일 수도 있다.</p>
+<h4>이슈 작성</h4>
+<p>아무튼 이 issues 에 <strong>요청 / 제보</strong> 를 적으면 된다.</p>
+<p><img src="/resources/weekly/2025-05-30-version-control-02/2.png" alt="2"></p>
+<h4>담당자가 확인</h4>
+<p>그러면 담당자가 확인 후 '아, 이건 bug 구나 혹은 요청이구나' 같은 것을 확인하고 태그를 다는 등 작업을 진행한다.</p>
+<p><img src="/resources/weekly/2025-05-30-version-control-02/3.png" alt="3"></p>
+<p>그리고 확인이 되었다는 댓글을 달아서 확인했다는 것을 알려준다.</p>
+<h4>조치</h4>
+<p>조치하고 나서 올리는 pull request 에 해당 issues 번호와 함께 변동사항을 기입한다.</p>
+<p><img src="/resources/weekly/2025-05-30-version-control-02/4.png" alt="4"></p>
+<p>어떠한 issue 가 있었고, 이것을 해결하기 위해서 어떠한 방법을 썼고, 혹은 지금 당장 조치할 수 없는 이유 같은 것을 적는다.</p>
+<h2>issue 는 항상 동기적으로 처리될 필요는 없다!</h2>
+<p>위의 사례 처럼, 이유가 있는 경우엔 issue 는 다른 issue 보다 나중에 해결되어도 된다.</p>
+<p>중요도가 상대적으로 덜 할 수도 있고,</p>
+<p>치명적인 오류나 굳이 들어갈 필요 없는 기능일 수도 있고,</p>
+<p>수정되거나 추가되면 좋지만 시간이 부족할 수도 있다.</p>
+<p><strong>중요한 것은 PR 에 충분히 설명하는 것이다.</strong></p>
+
+  </article>
+
+  </main>
+  <footer>
+  <p>&copy; gyunam park</p>
+</footer>
+</body>
+</html>
