@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="a tiny blog by gyunam park.">
+  <meta name="author" content="Gyunam Park">
+  <!-- OPEN GRAPH -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="gyunam.blog">
+  <!-- 파비콘(favicon) -->
+  <link rel="icon" href="/resources/favicon/favicon.ico" type="image/x-icon">
+  <!-- canonical URL -->
+  <link rel="canonical" href="https://www.gyunam.blog/">
+  
+  <link rel="stylesheet" href="/styles.css">
+  <title>gyunam.blog</title>
+</head>
+<body>
+  <header>
+  <div class="header-container">
+    <a class="header-title" href="/">gyunam.blog</a>
+    <nav class="header-nav">
+      <ul class="header-tag-list">
+        <li class="header-tag-list-item">
+          <a href="/tags/11ty/">11ty (1)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/express/">express (6)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/weekly/">weekly (10)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/sprinter/">sprinter (2)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/toy/">toy (1)</a>
+        </li>
+      </ul>
+      <ul class="header-tag-list">
+        <li class="header-tag-list-item">
+          <a href="/tags/git/">git (1)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/shell/">shell (1)</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+  <main>
+    
+  <article>
+    <h1>[weekly] [nb] 프레임워크와 라이브러리</h1>
+
+    
+      <p class="subtitle">프레임워크와 라이브러리의 차이에 대해 설명해 주세요.</p>
+    
+
+    <h2>프레임워크 vs 라이브러리</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">항목</th>
+<th style="text-align:left">프레임워크</th>
+<th style="text-align:left">라이브러리</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">역할</td>
+<td style="text-align:left">펠트 인형 만들기 키트</td>
+<td style="text-align:left">펠트 원단, 실, 바늘, 단추, 솜 등</td>
+</tr>
+<tr>
+<td style="text-align:left">제어권</td>
+<td style="text-align:left">정해진 설계도와 절차</td>
+<td style="text-align:left">자유</td>
+</tr>
+<tr>
+<td style="text-align:left">유연성</td>
+<td style="text-align:left">낮음(안정성)</td>
+<td style="text-align:left">높음(창의적)</td>
+</tr>
+<tr>
+<td style="text-align:left">예시</td>
+<td style="text-align:left">express.js</td>
+<td style="text-align:left">http</td>
+</tr>
+</tbody>
+</table>
+<h3>프레임워크</h3>
+<pre class="language-js"><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> createDollKit<span class="token punctuation">,</span> defineStyle<span class="token punctuation">,</span> decorateFace <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'felt-kit'</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 1. 키트를 생성하고 기본 구성 선택</span>
+<span class="token keyword">const</span> kit <span class="token operator">=</span> <span class="token function">createDollKit</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">model</span><span class="token operator">:</span> <span class="token string">'teddy'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">color</span><span class="token operator">:</span> <span class="token string">'brown'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">size</span><span class="token operator">:</span> <span class="token string">'medium'</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 2. 사용자 정의 부분만 제공: 바느질 스타일, 장식 등</span>
+<span class="token function">defineStyle</span><span class="token punctuation">(</span>kit<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">stitch</span><span class="token operator">:</span> <span class="token string">'whipstitch'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">thread</span><span class="token operator">:</span> <span class="token string">'brown'</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token function">decorateFace</span><span class="token punctuation">(</span>kit<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">eyes</span><span class="token operator">:</span> <span class="token string">'button'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">mouth</span><span class="token operator">:</span> <span class="token string">'smile'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">cheeks</span><span class="token operator">:</span> <span class="token string">'blush'</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 3. 키트가 전체 인형 제작을 자동으로 수행</span>
+kit<span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">doll</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'인형 완성'</span><span class="token punctuation">,</span> doll<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<h3>라이브러리</h3>
+<pre class="language-js"><code class="language-js"><span class="token keyword">import</span> pelt <span class="token keyword">from</span> <span class="token string">'pelt'</span><span class="token punctuation">;</span> <span class="token comment">// 펠트 원단 자르기 도구</span>
+<span class="token keyword">import</span> needle <span class="token keyword">from</span> <span class="token string">'needle'</span><span class="token punctuation">;</span> <span class="token comment">// 바느질 도구</span>
+<span class="token keyword">import</span> fill <span class="token keyword">from</span> <span class="token string">'fluff-filler'</span><span class="token punctuation">;</span> <span class="token comment">// 솜 채우는 도구</span>
+<span class="token keyword">import</span> decorate <span class="token keyword">from</span> <span class="token string">'bead-glue'</span><span class="token punctuation">;</span> <span class="token comment">// 단추나 장식 붙이기 도구</span>
+
+<span class="token comment">// 1. 펠트를 자른다</span>
+<span class="token keyword">const</span> pieces <span class="token operator">=</span> pelt<span class="token punctuation">.</span><span class="token function">cut</span><span class="token punctuation">(</span><span class="token string">'teddy'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">head</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">shape</span><span class="token operator">:</span> <span class="token string">'circle'</span><span class="token punctuation">,</span> <span class="token literal-property property">size</span><span class="token operator">:</span> <span class="token number">10</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">body</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">shape</span><span class="token operator">:</span> <span class="token string">'oval'</span><span class="token punctuation">,</span> <span class="token literal-property property">size</span><span class="token operator">:</span> <span class="token number">20</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">arms</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">shape</span><span class="token operator">:</span> <span class="token string">'rectangle'</span><span class="token punctuation">,</span> <span class="token literal-property property">size</span><span class="token operator">:</span> <span class="token number">5</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 2. 바느질로 조립한다</span>
+<span class="token keyword">const</span> stitched <span class="token operator">=</span> needle<span class="token punctuation">.</span><span class="token function">sew</span><span class="token punctuation">(</span>pieces<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">thread</span><span class="token operator">:</span> <span class="token string">'brown'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">style</span><span class="token operator">:</span> <span class="token string">'whipstitch'</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 3. 솜을 넣는다</span>
+<span class="token keyword">const</span> filled <span class="token operator">=</span> <span class="token function">fill</span><span class="token punctuation">(</span>stitched<span class="token punctuation">,</span> <span class="token punctuation">{</span> <span class="token literal-property property">fluff</span><span class="token operator">:</span> <span class="token string">'polyester'</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 4. 장식을 붙인다</span>
+<span class="token keyword">const</span> finished <span class="token operator">=</span> <span class="token function">decorate</span><span class="token punctuation">(</span>filled<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">eyes</span><span class="token operator">:</span> <span class="token string">'button'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">smile</span><span class="token operator">:</span> <span class="token string">'red-thread'</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'인형 완성'</span><span class="token punctuation">,</span> finished<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
+  </article>
+
+  </main>
+  <footer>
+  <p>&copy; gyunam park</p>
+</footer>
+</body>
+</html>
