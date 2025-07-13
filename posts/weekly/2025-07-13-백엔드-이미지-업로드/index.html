@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="a tiny blog by gyunam park.">
+  <meta name="author" content="Gyunam Park">
+  <!-- OPEN GRAPH -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="gyunam.blog">
+  <!-- 파비콘(favicon) -->
+  <link rel="icon" href="/resources/favicon/favicon.ico" type="image/x-icon">
+  <!-- canonical URL -->
+  <link rel="canonical" href="https://www.gyunam.blog/">
+  
+  <link rel="stylesheet" href="/styles.css">
+  <title>gyunam.blog</title>
+</head>
+<body>
+  <header>
+  <div class="header-container">
+    <a class="header-title" href="/">gyunam.blog</a>
+    <nav class="header-nav">
+      <ul class="header-tag-list">
+        <li class="header-tag-list-item">
+          <a href="/tags/11ty/">11ty (1)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/express/">express (6)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/weekly/">weekly (14)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/sprinter/">sprinter (2)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/toy/">toy (1)</a>
+        </li>
+      </ul>
+      <ul class="header-tag-list">
+        <li class="header-tag-list-item">
+          <a href="/tags/git/">git (1)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/shell/">shell (1)</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+  <main>
+    
+  <article>
+    <h1>[weekly] [nb] 백엔드 이미지 업로드</h1>
+
+    
+      <p class="subtitle">백엔드 서버에서 이미지 업로드를 구현하는 다양한 방식에 대해 설명해 주세요.</p>
+    
+
+    <h2>로컬 저장소(서버)</h2>
+<p>백엔드 서버가 이미지 파일을 받아서 로컬 디렉토리에 저장하는 방식.</p>
+<p>보통 편의를 위해서 multer 같은 미들웨어를 사용한다.</p>
+<ul>
+<li>
+<p>장점: 구현이 간단, 빠른 개발 가능</p>
+</li>
+<li>
+<p>단점: 서버 공간에 의존, 서버 확장 시 관리 어려움</p>
+</li>
+</ul>
+<h2>서버 -&gt; 클라우드 스토리지</h2>
+<p>백엔드가 이미지를 받아서 aws s3, cloudinary, firebase storage 등에 업로드 하는 방식.</p>
+<p>업로드 후 url 등을 클라이언트에 반환하여, 클라이언트가 해당 url 로 이미지를 불러온다.</p>
+<ul>
+<li>
+<p>장점: 확장성 좋음, 관리 편리, 안정성 높음</p>
+</li>
+<li>
+<p>단점: 클라우드 연동 구현 필요, 약간 복잡</p>
+</li>
+</ul>
+<h2>클라이언트 -&gt; 클라우드 스토리지</h2>
+<p>백엔드에서 Presigned url 등을 발급해서 전달하면 클라이언트가 직접 업로드하는 방식.</p>
+<p>업로드된 url을 백엔드에 전송해 저장하고, 클라이언트는 이후에 이 url 을 받아서 사용한다.</p>
+<ul>
+<li>
+<p>장점: 서버 부하 감소, 대용량 파일에 적합</p>
+</li>
+<li>
+<p>단점: 클라이언트 구현이 다소 복잡</p>
+</li>
+</ul>
+<h2>base64 인코딩으로 전송</h2>
+<p>이미지를 base64로 인코딩해서 JSON 등으로 백엔드에 전달하는 방식.</p>
+<p>서버에서 이를 디코딩해 저장하거나 클라우드로 전송한다.</p>
+<ul>
+<li>
+<p>장점: 전송 형식이 단순, 파일 업로드 미들웨어 불필요</p>
+</li>
+<li>
+<p>단점: 대용량 이미지에는 비효율적 (전송 속도 느림, 데이터 크기 증가)</p>
+</li>
+</ul>
+<h2>마무리</h2>
+<p>실제로는 <code>서버-&gt;스토리지</code> 와 <code>클라이언트-&gt;스토리지</code> 둘 중에 하나를 선택하게 될 텐데, 이미지의 용량이 많거나, 동영상, 또는 서버 부하를 줄여야 할 때엔 클라이언트에서 스토리지로 업로드를 직접하는 게 좋다고 한다.</p>
+
+  </article>
+
+  </main>
+  <footer>
+  <p>&copy; gyunam park</p>
+</footer>
+</body>
+</html>

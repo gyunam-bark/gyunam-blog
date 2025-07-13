@@ -51,25 +51,35 @@
 </header>
   <main>
     
-<ul class = "post-list">
-  
-    <li class="post-item">
-      <h2><a class="post-item-title" href="/posts/sprinter/2025-05-13-mission-2/">[sprinter] 미션 2 삽질 기록</a></h2>
-      <p class="post-item-subtitle">[NB] 웹개발 시작하기</p>
-      
-        <small class="post-item-date">2025-05-13</small>
-      
-    </li>
-  
-    <li class="post-item">
-      <h2><a class="post-item-title" href="/posts/sprinter/2025-05-02-mission-1/">[sprinter] 미션 1 삽질 기록</a></h2>
-      <p class="post-item-subtitle">[NB] 웹개발 시작하기</p>
-      
-        <small class="post-item-date">2025-05-02</small>
-      
-    </li>
-  
-</ul>
+  <article>
+    <h1>[weekly] [nb] express.js 와 미들웨어</h1>
+
+    
+      <p class="subtitle">Express.js에서 미들웨어란 무엇인지 설명해 주세요.</p>
+    
+
+    <p>한 마디로 설명하자면 요청(request)가 응답(request) 가 되기 전까지 거치는 <code>처리 단계</code> 를 뜻 한다.</p>
+<p>즉, express.js 는 모든 기능이 <strong>미들웨어</strong> 로 구성되어 있고, 이것이 express.js 의 설계 철학이다.</p>
+<h2>Router 도 사실 미들웨어</h2>
+<p>그래서 우리가 라우터를 구분할 때 많이 쓰는 <code>express.Router()</code> 도 사실은 미리 구현된 미들웨어일 뿐이다.</p>
+<h2>제빵 비유</h2>
+<p>원래라면 주문이 들어와서 곧바로 굽는 빵은 흔치 않지만, 이번에는 클라이언트가 요청하는 걸로 생각해서 주문 즉시 빵을 굽는 것으로 생각한다.</p>
+<h3>1. 손님 주문</h3>
+<p>클라이언트 요청</p>
+<h3>2. 주문 확인</h3>
+<p>이미 재료가 품절된 빵일 경우 굽지 못한다고 처리한다.</p>
+<h3>2. 반죽 확인 미들웨어</h3>
+<p>반죽이 괜찮은지 확인한다.</p>
+<h3>3. 형태 만들기 미들웨어</h3>
+<p>반죽을 정해진 형태로 만든다.</p>
+<h3>4. 오븐에서 굽기 미들웨어</h3>
+<p>반죽을 오븐에 넣어 빵으로 굽는다.</p>
+<h3>5. 포장 미들웨어</h3>
+<p>결과를 보기 좋도록 포장한다.</p>
+<h3>6. 손님에게 전달</h3>
+<p>클라이언트에게 응답을 돌려 보낸다.</p>
+
+  </article>
 
   </main>
   <footer>
