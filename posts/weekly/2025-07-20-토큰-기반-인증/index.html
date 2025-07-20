@@ -51,17 +51,53 @@
 </header>
   <main>
     
-<ul class = "post-list">
-  
-    <li class="post-item">
-      <h2><a class="post-item-title" href="/posts/11ty/2025-04-27-hello-world/">[11ty] hello,world.</a></h2>
-      <p class="post-item-subtitle">11ty 개발환경 설정 및 hello,world. 웹페이지 만들기.</p>
-      
-        <small class="post-item-date">2025-04-27</small>
-      
-    </li>
-  
+  <article>
+    <h1>[weekly] [nb] 토큰 기반 인증</h1>
+
+    
+      <p class="subtitle">토큰 기반 인증에 대해 설명해 주세요.</p>
+    
+
+    <h2>콘서트 출입 팔찌 비유</h2>
+<ol>
+<li>입장 시 확인</li>
+</ol>
+<ul>
+<li>콘서트장 입구에서 티켓 보여주고 본인 인증.</li>
+<li>직원이 확인하고 나면, 손목에 **출입 팔찌(토큰)**를 제공.</li>
 </ul>
+<ol start="2">
+<li>입장 후 자유롭게 돌아다님</li>
+</ol>
+<ul>
+<li>이후에는 팔찌만 보여주면 다시 인증 안 해도 모든 구역을 자유롭게 다닐 수 있음.</li>
+<li>팔찌 자체에 “VIP”라든가 “입장 시간”, “특정 구역 접근 가능” 같은 정보가<br>
+**미리 인쇄(=암호화)**돼 있어서, 어디서든 팔찌만 보면 바로 판별이 가능.</li>
+</ul>
+<ol start="3">
+<li>보안 처리</li>
+</ol>
+<ul>
+<li>팔찌는 위조 방지 처리(=서명된 토큰)되어 있어서, 가짜 팔찌로 들어가긴 어려움.</li>
+<li>다만, 팔찌를 분실하거나 남에게 주면 위험함. 토큰 탈취에 해당하는 상황.</li>
+</ul>
+<ol start="4">
+<li>콘서트장은 팔찌 리스트를 따로 안 들고 있음</li>
+</ol>
+<ul>
+<li>즉, 누구에게 어떤 팔찌를 줬는지 따로 저장하지 않음.<br>
+그냥 팔찌만 보고 “유효한지” 확인하는 방식.</li>
+</ul>
+<h2>토큰 기반 인증이 좋은 경우</h2>
+<ol>
+<li>모바일 앱, 싱글 페이지 어플리케이션</li>
+<li>서버 간 분산 구조/마이크로서비스 아키텍쳐</li>
+<li>Stateless 구조</li>
+<li>확장성 중시(서버가 사용자 상태를 저장할 필요가 없음)</li>
+<li>OAuth, 소셜 로그인, 외부 API 연동</li>
+</ol>
+
+  </article>
 
   </main>
   <footer>

@@ -51,17 +51,52 @@
 </header>
   <main>
     
-<ul class = "post-list">
-  
-    <li class="post-item">
-      <h2><a class="post-item-title" href="/posts/11ty/2025-04-27-hello-world/">[11ty] hello,world.</a></h2>
-      <p class="post-item-subtitle">11ty 개발환경 설정 및 hello,world. 웹페이지 만들기.</p>
-      
-        <small class="post-item-date">2025-04-27</small>
-      
-    </li>
-  
+  <article>
+    <h1>[weekly] [nb] 세션 기반 인증</h1>
+
+    
+      <p class="subtitle">세션 기반 인증에 대해 설명해 주세요.</p>
+    
+
+    <h2>코스트코 비유</h2>
+<p>뭔가 확 와닿는 비유를 찾다보니 <code>코스트코</code> 가 딱 경우랑 적합했다.</p>
+<ol>
+<li>
+<p>코스트코에서 회원 인증하기</p>
+<ul>
+<li>코스트코에 와서 회원카드를 보여주고 본인 임을 증명.</li>
+<li>코스트코 직원은 손님의 정보를 확인
+(내부적으로는 손님에게 **출입증(세션 ID)**을 발급한 것)</li>
+<li>출입증은 코스트코 내부에서만 의미가 있음.<br>
+손님이 물건 고를 때, 계산할 때 직원은 이 출입증을 보고 판단.</li>
 </ul>
+</li>
+<li>
+<p>출입증은 코스트코 내부에서 관리</p>
+<ul>
+<li>출입증(세션)은 코스트코(서버)가 보관하고, 손님은 단지 출입증 번호만 들고 다님<br>
+(쿠키에 저장됨).</li>
+<li>이 출입증은 외부에서는 무용지물이고, 코스트코 서버가 해당 번호에 대응되는 정보를 유지하고 있어야 함.</li>
+</ul>
+</li>
+</ol>
+<h2>세션 기반 인증이 좋은 경우</h2>
+<ul>
+<li>
+<p>서버가 클라이언트를 직접 관리할 수 있는 구조일 때</p>
+</li>
+<li>
+<p>브라우저 기반 웹 서비스</p>
+</li>
+<li>
+<p>보안 중심 서비스</p>
+</li>
+<li>
+<p>실시간 통신(WebSocket) 어플리케이션</p>
+</li>
+</ul>
+
+  </article>
 
   </main>
   <footer>
