@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="a tiny blog by gyunam park.">
+  <meta name="author" content="Gyunam Park">
+  <!-- OPEN GRAPH -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="gyunam.blog">
+  <!-- 파비콘(favicon) -->
+  <link rel="icon" href="/resources/favicon/favicon.ico" type="image/x-icon">
+  <!-- canonical URL -->
+  <link rel="canonical" href="https://www.gyunam.blog/">
+  
+  <link rel="stylesheet" href="/styles.css">
+  <title>gyunam.blog</title>
+</head>
+<body>
+  <header>
+  <div class="header-container">
+    <a class="header-title" href="/">gyunam.blog</a>
+    <nav class="header-nav">
+      <ul class="header-tag-list">
+        <li class="header-tag-list-item">
+          <a href="/tags/11ty/">11ty (1)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/express/">express (6)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/weekly/">weekly (20)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/sprinter/">sprinter (2)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/toy/">toy (1)</a>
+        </li>
+      </ul>
+      <ul class="header-tag-list">
+        <li class="header-tag-list-item">
+          <a href="/tags/git/">git (1)</a>
+        </li>
+        <li class="header-tag-list-item">
+          <a href="/tags/shell/">shell (1)</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+  <main>
+    
+  <article>
+    <h1>[weekly] [nb] 레이어드 아키텍쳐</h1>
+
+    
+      <p class="subtitle">레이어드 아키텍쳐에 대해 예시와 함께 설명해주세요.</p>
+    
+
+    <h2>레이어드 아키텍쳐</h2>
+<p>시스템을 책임/관심사별 <code>층</code>으로 나눠 결합도를 낮추고 변경 비용을 줄이는 설계 방식이다.</p>
+<h3>1. 라우터(router)</h3>
+<p>병원으로 비유하면, <code>안내 데스크/키오스크</code> 로 볼 수 있다.</p>
+<p>→ 환자를 어느 창구/진료실로 보낼지 라우팅만 수행.</p>
+<pre class="language-javascript"><code class="language-javascript">router<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'/examples'</span><span class="token punctuation">,</span> handleGetExampleList<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<h3>2. 컨트롤러(controller)</h3>
+<p>병원으로 비유하면, <code>접수/간호사</code> 로 볼 수 있다.</p>
+<p>→ 기본 정보·증상을 체크하고 진료 요청 형식으로 정리.</p>
+<pre class="language-javascript"><code class="language-javascript"><span class="token keyword">export</span> <span class="token keyword">const</span> <span class="token literal-property property">handleGetExampleList</span><span class="token operator">:</span> <span class="token function-variable function">RequestHandler</span> <span class="token operator">=</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token parameter">req<span class="token punctuation">,</span> res</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> data <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">getExampleList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  res<span class="token punctuation">.</span><span class="token function">status</span><span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">json</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
+<h3>3. 서비스(service)</h3>
+<p>병원으로 비유하면, <code>의사/진료</code> 로 볼 수 있다.</p>
+<p>→ 진단 규칙 적용, 검사/처방·입원 등 주요 로직을 수행.</p>
+<pre class="language-javascript"><code class="language-javascript"><span class="token keyword">export</span> <span class="token keyword">const</span> <span class="token function-variable function">getExampleList</span> <span class="token operator">=</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> exampleList <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">findManyExample</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> exampleList<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
+<h3>4. 레포지토리(repository)</h3>
+<p>병원으로 비유하면, <code>전자 의무기록/약품 재고</code> 로 볼 수 있다.</p>
+<p>→ 환자 기록과 결과를 영속 저장·조회.</p>
+<pre class="language-javascript"><code class="language-javascript"><span class="token keyword">export</span> <span class="token keyword">const</span> <span class="token function-variable function">findManyExample</span> <span class="token operator">=</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token comment">// ORM 또는 데이터베이스 접근 코드</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
+
+  </article>
+
+  </main>
+  <footer>
+  <p>&copy; gyunam park</p>
+</footer>
+</body>
+</html>
